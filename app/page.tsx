@@ -10,28 +10,33 @@ export default function HomePage() {
       <section className="flex flex-col gap-10">
         <p className="eyebrow">牧之的云 · OPC 产品矩阵</p>
 
-        {/* 五个字母排开，每个字母一条产品线 */}
+        {/* 五个字母排开，每个字母一条产品线，盖一枚刻汉字的朱文印 */}
         <h1 className="font-mono font-bold uppercase leading-none tracking-tight">
           <span className="sr-only">zmzai cloud</span>
           <span
             aria-hidden="true"
-            className="flex flex-wrap items-baseline gap-x-2 text-[clamp(3.5rem,10vw,7rem)]"
+            className="flex flex-wrap items-end gap-x-6 gap-y-4 text-[clamp(3.5rem,10vw,7rem)]"
           >
             {letterProducts.map((p, i) => (
-              <span key={`${p.letter}-${i}`} className="flex items-baseline gap-x-2">
+              <span key={`${p.letter}-${i}`} className="flex items-end gap-x-3">
                 <Link
                   href={p.href}
-                  className="focus-ring text-ink transition-colors hover:text-accent"
+                  className="focus-ring group flex items-end gap-x-3 text-ink"
                   title={`${p.name} — ${p.tagline}`}
                 >
-                  {p.letter}
+                  <span className="transition-colors group-hover:text-accent">
+                    {p.letter}
+                  </span>
+                  {/* 盖好：每个字母产品线盖一枚刻汉字的朱文印 */}
+                  <span className="grid size-[0.72em] shrink-0 place-items-center rounded-[2px] bg-accent-strong font-serif text-[0.34em] font-bold leading-none text-accent-ink transition-colors group-hover:bg-accent">
+                    {p.hanzi}
+                  </span>
                 </Link>
-                {i < letterProducts.length - 1 ? (
-                  <span className="text-line select-none">·</span>
-                ) : null}
               </span>
             ))}
-            <span className="text-muted font-normal text-[0.5em]">.cloud</span>
+            <span className="text-muted self-end pb-[0.18em] font-normal text-[0.5em]">
+              .cloud
+            </span>
           </span>
         </h1>
 
