@@ -1,39 +1,92 @@
-export type ProjectStatus = "live" | "building" | "planned";
+/**
+ * zmzai.cloud 产品矩阵 — z·m·z·a·i 逐字母体系。
+ * 五个字母是「牧之 muzhi」拼音的拆解：每个字母挂一条 AI 产品线，
+ * 既是产品索引，又是署名。命名体系见 BRAND.md §产品矩阵。
+ */
 
-export interface Project {
-  slug: string;
+export type ProductStatus = "live" | "building" | "planned";
+
+export interface ProductLine {
+  /** 字母标识：z · m · z · a · i，或本体 muzhi */
+  letter: string;
+  /** 中文产品名（单字，印章用） */
+  hanzi: string;
+  /** 产品线名 */
   name: string;
+  /** 一句话 */
   tagline: string;
+  /** 详细描述 */
   description: string;
-  status: ProjectStatus;
+  status: ProductStatus;
   href: string;
-  /** Project-level accent override (design.md ## Variants). */
+  /** 项目级强调色（design.md ## Variants），仅 sub-project 覆盖 */
   accent?: string;
 }
 
-export const projects: Project[] = [
+/** muzhi 本体：博客 + 付费知识体系，第一个落地成员。 */
+export const rootProduct: ProductLine = {
+  letter: "牧",
+  hanzi: "牧之",
+  name: "牧之 AI 知识体系",
+  tagline: "自托管的知识产品交付与会员运营底座",
+  description:
+    "博客 + 付费知识体系。发布内容、注册、免费信任、支付或邀请码获得权益、安全观看与下载、保存进度、反馈改进——一条经过真实业务验证的闭环。",
+  status: "live",
+  href: "https://muzhi.zmzai.cloud",
+};
+
+/** z·m·z·a·i 五条字母产品线。 */
+export const letterProducts: ProductLine[] = [
   {
-    slug: "knowledge-kit",
-    name: "mdldm knowledge kit",
-    tagline: "自托管的知识产品交付与会员运营底座",
-    description:
-      "一条经过真实业务验证的闭环：发布内容 → 注册 → 免费信任 → 支付或邀请码获得权益 → 安全观看与下载 → 保存进度 → 反馈改进。面向个人创作者，Apache-2.0。",
-    status: "live",
-    href: "https://kit.zmzai.cloud",
+    letter: "z",
+    hanzi: "场",
+    name: "沙箱场",
+    tagline: "代码执行与 Agent 实验的沙箱",
+    description: "一个隔离的代码执行与 Agent 实验环境，跑 OPC 小产品的原型和自动化任务。",
+    status: "planned",
+    href: "https://z.zmzai.cloud",
   },
   {
-    slug: "zmzai-cloud",
-    name: "zmzai.cloud",
-    tagline: "你正在看的这个枢纽站本身",
-    description:
-      "牧之的云的门牌号。极薄一层：品牌首页 + OPC 项目索引。继承印章品牌底盘，不展开子项目级强调色。",
+    letter: "m",
+    hanzi: "驿",
+    name: "中转驿",
+    tagline: "模型与 API 的中转站",
+    description: "多模型路由与 API 网关，统一的接入、鉴权、计费和故障转移。",
+    status: "planned",
+    href: "https://m.zmzai.cloud",
+  },
+  {
+    letter: "z",
+    hanzi: "站",
+    name: "聚合站",
+    tagline: "zmzai.cloud 主站与产品索引",
+    description: "你正在看的这个枢纽站本身：品牌首页 + OPC 产品索引，所有子产品的门牌。",
     status: "live",
-    href: "/",
-    accent: "oklch(0.46 0.150 27)",
+    href: "https://zmzai.cloud",
+  },
+  {
+    letter: "a",
+    hanzi: "使",
+    name: "Agent 使",
+    tagline: "Agent 编排与工作流",
+    description: "把 AI Agent 编排成可复用的工作流，workos 式的自动化执行底座。",
+    status: "planned",
+    href: "https://a.zmzai.cloud",
+  },
+  {
+    letter: "i",
+    hanzi: "作",
+    name: "工作台",
+    tagline: "AI 时代的个人工作台",
+    description: "面向个人创作者的一体化 AI 工作台：写作、检索、交付、运营一窗收齐。",
+    status: "planned",
+    href: "https://i.zmzai.cloud",
   },
 ];
 
-export function statusLabel(status: ProjectStatus): string {
+export const allProducts: ProductLine[] = [rootProduct, ...letterProducts];
+
+export function statusLabel(status: ProductStatus): string {
   switch (status) {
     case "live":
       return "LIVE";
