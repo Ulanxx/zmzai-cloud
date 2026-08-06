@@ -23,7 +23,11 @@ done
 
 cd "/opt/zmzai/$REPO_DIR"
 echo "=== [$APP] 拉代码 ==="
-git pull --ff-only
+git fetch origin main
+# 清理本地生成文件（pnpm-lock.yaml 等），避免 pull 冲突
+git checkout -- . 2>/dev/null || true
+git clean -fd pnpm-lock.yaml 2>/dev/null || true
+git reset --hard origin/main
 
 echo "=== [$APP] 装依赖 ==="
 pnpm install --frozen-lockfile 2>&1 | tail -1 || pnpm install 2>&1 | tail -1
