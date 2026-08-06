@@ -9,3 +9,4 @@ out
 # build artifacts
 tsconfig.tsbuildinfo
 *.tsbuildinfo
+.vercel
