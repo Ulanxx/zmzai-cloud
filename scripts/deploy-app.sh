@@ -2,7 +2,9 @@
 # 在服务器上部署单个应用：拉最新代码 → 装依赖 → build → PM2 重启。
 # 用法（在服务器上跑）：deploy-app.sh <process_name>
 # 例：deploy-app.sh muzhi
+# 由 runner 用户跑（PM2 进程也是 runner），CI 和手动部署共用。
 set -euo pipefail
+export CI=true
 
 APP="${1:?用法: deploy-app.sh <process_name>（见 deploy-targets.sh）}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
