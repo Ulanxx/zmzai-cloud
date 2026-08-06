@@ -16,7 +16,7 @@ const cols = [
   "courseprogresses","products","orders","orderitems","paymentevents",
   "entitlements","invitations","invitationredemptions","identitytokens",
   "mediaassets","operationfailures","ratelimitbuckets","channels","apikeys","usages",
-  "modelprices","balanceaccounts","balanceledgers","balancereservations","channelattempts","adminaudits",
+  "modelprices","balanceaccounts","balanceledgers","balancereservations","channelattempts","adminaudits","relayratelimitbuckets",
 ];
 for (const c of cols) {
   if (!db.getCollectionNames().includes(c)) db.createCollection(c);
@@ -43,7 +43,8 @@ db.balanceledgers.createIndex({ userId: 1, createdAt: -1 });
 db.balancereservations.createIndex({ usageId: 1 }, { unique: true });
 db.balancereservations.createIndex({ status: 1, expiresAt: 1 });
 db.channelattempts.createIndex({ usageId: 1, createdAt: 1 });
-db.ratelimitbuckets.createIndex({ keyId: 1, windowStart: 1 }, { unique: true });
+db.relayratelimitbuckets.createIndex({ keyId: 1, windowStart: 1 }, { unique: true });
+db.relayratelimitbuckets.createIndex({ windowStart: 1 }, { expireAfterSeconds: 7200 });
 // series / courses
 db.series.createIndex({ status: 1, createdAt: -1 });
 db.courses.createIndex({ seriesId: 1, position: 1 });
