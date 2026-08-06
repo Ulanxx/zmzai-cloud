@@ -18,7 +18,7 @@ export function SiteHeader() {
           </Link>
           <Link
             className="focus-ring transition-colors hover:text-muted"
-            href="https://github.com/muzhi"
+            href="https://github.com/Ulanxx"
             target="_blank"
             rel="noreferrer"
           >
