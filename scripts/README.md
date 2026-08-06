@@ -30,6 +30,16 @@ su - runner -c "bash /opt/zmzai/scripts/auto-deploy.sh"
 
 ## MongoDB 创建脚本
 
+中转驿启用余额预授权前，MongoDB 必须以单节点副本集运行。先在 `/etc/mongod.conf`
+添加 `replication.replSetName: rs0` 并重启 MongoDB，再执行：
+
+```bash
+bash /opt/zmzai/scripts/mongo-replica-init.sh
+```
+
+应用 URI 加上 `?replicaSet=rs0`，例如
+`mongodb://127.0.0.1:27017/muzhi_production?replicaSet=rs0`。
+
 初始化本地 MongoDB（建库、集合、索引）：
 
 ```bash

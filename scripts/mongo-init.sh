@@ -16,6 +16,7 @@ const cols = [
   "courseprogresses","products","orders","orderitems","paymentevents",
   "entitlements","invitations","invitationredemptions","identitytokens",
   "mediaassets","operationfailures","ratelimitbuckets","channels","apikeys","usages",
+  "modelprices","balanceaccounts","balanceledgers","balancereservations","channelattempts","adminaudits",
 ];
 for (const c of cols) {
   if (!db.getCollectionNames().includes(c)) db.createCollection(c);
@@ -30,9 +31,19 @@ db.sessions.createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 db.channels.createIndex({ priority: 1 });
 // apikeys
 db.apikeys.createIndex({ keyHash: 1 }, { unique: true });
-// usages
-db.usages.createIndex({ userId: 1, requestId: 1 }, { unique: true });
+// usages：从旧的 userId/requestId 幂等键迁移到调用者维度。
+for (const index of db.usages.getIndexes()) {
+  if (index.name === "userId_1_requestId_1") db.usages.dropIndex(index.name);
+}
+db.usages.createIndex({ callerKind: 1, callerId: 1, requestId: 1 }, { unique: true });
 db.usages.createIndex({ createdAt: -1 });
+db.modelprices.createIndex({ model: 1 }, { unique: true });
+db.balanceaccounts.createIndex({ userId: 1 }, { unique: true });
+db.balanceledgers.createIndex({ userId: 1, createdAt: -1 });
+db.balancereservations.createIndex({ usageId: 1 }, { unique: true });
+db.balancereservations.createIndex({ status: 1, expiresAt: 1 });
+db.channelattempts.createIndex({ usageId: 1, createdAt: 1 });
+db.ratelimitbuckets.createIndex({ keyId: 1, windowStart: 1 }, { unique: true });
 // series / courses
 db.series.createIndex({ status: 1, createdAt: -1 });
 db.courses.createIndex({ seriesId: 1, position: 1 });
