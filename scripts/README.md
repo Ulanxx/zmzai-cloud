@@ -40,6 +40,13 @@ bash /opt/zmzai/scripts/mongo-replica-init.sh
 应用 URI 加上 `?replicaSet=rs0`，例如
 `mongodb://127.0.0.1:27017/muzhi_production?replicaSet=rs0`。
 
+余额预留清算由服务器 cron 每分钟执行：
+
+```bash
+install -m 0755 scripts/reconcile-relay-reservations.sh /opt/zmzai/scripts/
+install -m 0644 scripts/zmzai-relay-reconcile.cron /etc/cron.d/
+```
+
 初始化本地 MongoDB（建库、集合、索引）：
 
 ```bash

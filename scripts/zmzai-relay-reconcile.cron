@@ -1,0 +1,1 @@
+* * * * * root /opt/zmzai/scripts/reconcile-relay-reservations.sh >> /var/log/zmzai-relay-reconcile.log 2>&1

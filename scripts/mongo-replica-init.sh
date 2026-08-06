@@ -12,7 +12,8 @@ mongosh --quiet "$MONGO_URI/admin" --eval "
     if (status.set !== '$REPLICA_SET') throw new Error('副本集名称不匹配：' + status.set);
     print('副本集已就绪：' + status.set);
   } catch (error) {
-    if (!String(error).includes('not yet initialized')) throw error;
+    const message = String(error);
+    if (!message.includes('not yet initialized') && !message.includes('no replset config has been received')) throw error;
     rs.initiate({ _id: '$REPLICA_SET', members: [{ _id: 0, host: '127.0.0.1:27017' }] });
     print('已初始化副本集：$REPLICA_SET');
   }
