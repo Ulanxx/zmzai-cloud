@@ -5,6 +5,7 @@
 # 由 runner 用户跑（PM2 进程也是 runner），CI 和手动部署共用。
 set -euo pipefail
 export CI=true
+export PNPM_CONFIRM_MODULES_PURGE=false
 
 APP="${1:?用法: deploy-app.sh <process_name>（见 deploy-targets.sh）}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
