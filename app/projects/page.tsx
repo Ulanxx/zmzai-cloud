@@ -21,8 +21,8 @@ export default function ProjectsPage() {
       </header>
 
       <ol className="flex flex-col divide-y divide-line border-y-2 border-rule">
-        {allProducts.map((p, i) => (
-          <li key={`${p.letter}-${i}`} className="py-8">
+        {allProducts.map((p) => (
+          <li key={p.id} className="py-8">
             <Link href={p.href} className="group grid grid-cols-[5rem_1fr] items-baseline gap-6">
               <span className="flex items-baseline gap-3">
                 <span className="font-mono text-3xl font-bold uppercase text-ink transition-colors group-hover:text-accent">

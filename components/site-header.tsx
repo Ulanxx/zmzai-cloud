@@ -2,6 +2,9 @@ import Link from "next/link";
 
 import { Wordmark } from "@/components/wordmark";
 
+const AUTH_URL = process.env.NEXT_PUBLIC_AUTH_URL ?? "https://auth.zmzai.cloud";
+const WORKSPACE_URL = "https://zmzai.cloud/workspace";
+
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b-2 border-rule bg-paper">
@@ -24,6 +27,7 @@ export function SiteHeader() {
           >
             GitHub
           </Link>
+          <Link className="btn-primary" href={`${AUTH_URL}/login?next=${encodeURIComponent(WORKSPACE_URL)}`}>登录</Link>
         </nav>
       </div>
     </header>

@@ -7,6 +7,8 @@
 export type ProductStatus = "live" | "building" | "planned";
 
 export interface ProductLine {
+  /** Stable identifier; letters are presentation-only and may repeat. */
+  id: string;
   /** 字母标识：z · m · z · a · i，或本体 muzhi */
   letter: string;
   /** 中文产品名（单字，印章用） */
@@ -19,12 +21,14 @@ export interface ProductLine {
   description: string;
   status: ProductStatus;
   href: string;
+  supportsReturnUrl: boolean;
   /** 项目级强调色（design.md ## Variants），仅 sub-project 覆盖 */
   accent?: string;
 }
 
 /** muzhi 本体：博客 + 付费知识体系，第一个落地成员。 */
 export const rootProduct: ProductLine = {
+  id: "muzhi",
   letter: "牧",
   hanzi: "牧之",
   name: "牧之 AI 知识体系",
@@ -33,11 +37,13 @@ export const rootProduct: ProductLine = {
     "博客 + 付费知识体系。发布内容、注册、免费信任、支付或邀请码获得权益、安全观看与下载、保存进度、反馈改进——一条经过真实业务验证的闭环。",
   status: "live",
   href: "https://muzhi.zmzai.cloud",
+  supportsReturnUrl: false,
 };
 
 /** z·m·z·a·i 五条字母产品线。 */
 export const letterProducts: ProductLine[] = [
   {
+    id: "sandbox",
     letter: "z",
     hanzi: "场",
     name: "沙箱场",
@@ -45,17 +51,21 @@ export const letterProducts: ProductLine[] = [
     description: "一个隔离的代码执行与 Agent 实验环境，跑 OPC 小产品的原型和自动化任务。",
     status: "planned",
     href: "https://z.zmzai.cloud",
+    supportsReturnUrl: false,
   },
   {
+    id: "relay",
     letter: "m",
     hanzi: "驿",
     name: "中转驿",
     tagline: "模型与 API 的中转站",
     description: "多模型路由与 API 网关，统一的接入、鉴权、计费和故障转移。",
-    status: "planned",
+    status: "live",
     href: "https://m.zmzai.cloud",
+    supportsReturnUrl: false,
   },
   {
+    id: "hub",
     letter: "z",
     hanzi: "站",
     name: "聚合站",
@@ -63,8 +73,10 @@ export const letterProducts: ProductLine[] = [
     description: "你正在看的这个枢纽站本身：品牌首页 + OPC 产品索引，所有子产品的门牌。",
     status: "live",
     href: "https://zmzai.cloud",
+    supportsReturnUrl: false,
   },
   {
+    id: "agent",
     letter: "a",
     hanzi: "使",
     name: "Agent 使",
@@ -72,8 +84,10 @@ export const letterProducts: ProductLine[] = [
     description: "把 AI Agent 编排成可复用的工作流，workos 式的自动化执行底座。",
     status: "planned",
     href: "https://a.zmzai.cloud",
+    supportsReturnUrl: false,
   },
   {
+    id: "workos",
     letter: "i",
     hanzi: "作",
     name: "工作台",
@@ -81,6 +95,7 @@ export const letterProducts: ProductLine[] = [
     description: "面向个人创作者的一体化 AI 工作台：写作、检索、交付、运营一窗收齐。",
     status: "planned",
     href: "https://i.zmzai.cloud",
+    supportsReturnUrl: false,
   },
 ];
 

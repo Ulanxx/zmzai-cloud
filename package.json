@@ -12,9 +12,12 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@zmzai/db": "git+https://github.com/Ulanxx/zmzai-db.git",
+    "mongoose": "8.24.1",
     "next": "15.5.21",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "zod": "3.25.76"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "4.3.3",
