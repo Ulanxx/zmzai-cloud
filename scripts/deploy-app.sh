@@ -41,6 +41,11 @@ git reset --hard origin/main
 echo "=== [$APP] 装依赖 ==="
 if [ "$APP" = "agent" ]; then
   "$AGENT_NODE_BIN/node" "$AGENT_PNPM_CJS" install --frozen-lockfile --offline --store-dir="$PNPM_STORE_DIR"
+  AGENT_SWC_DIR="node_modules/.pnpm/@next+swc-linux-x64-gnu@15.5.21/node_modules/@next/swc-linux-x64-gnu"
+  if [ ! -f "$AGENT_SWC_DIR/next-swc.linux-x64-gnu.node" ]; then
+    mkdir -p "$AGENT_SWC_DIR"
+    tar -xzf /opt/zmzai/cache/next-swc-linux-x64-gnu-15.5.21.tgz --strip-components=1 -C "$AGENT_SWC_DIR"
+  fi
 else
   pnpm install --frozen-lockfile 2>&1 | tail -1 || pnpm install 2>&1 | tail -1
 fi
