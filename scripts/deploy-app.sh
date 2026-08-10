@@ -21,6 +21,15 @@ for t in "${DEPLOY_TARGETS[@]}"; do
 done
 [ -z "$match" ] && { echo "未知应用: $APP"; exit 1; }
 
+if [ "$APP" = "agent" ]; then
+  AGENT_NODE_BIN="/opt/zmzai/actions-agent/externals/node24/bin"
+  AGENT_PNPM_CJS="/home/runner/setup-pnpm/node_modules/.pnpm/pnpm@11.5.0/node_modules/pnpm/bin/pnpm.cjs"
+  [ -x "$AGENT_NODE_BIN/node" ] || { echo "Agent Node 24 runtime 不可用"; exit 1; }
+  [ -f "$AGENT_PNPM_CJS" ] || { echo "Agent pnpm 11 runtime 不可用"; exit 1; }
+  export PATH="$AGENT_NODE_BIN:$PATH"
+  export PNPM_STORE_DIR="/home/runner/.pnpm-store"
+fi
+
 cd "/opt/zmzai/$REPO_DIR"
 echo "=== [$APP] 拉代码 ==="
 git fetch origin main
@@ -30,14 +39,26 @@ git clean -fd pnpm-lock.yaml 2>/dev/null || true
 git reset --hard origin/main
 
 echo "=== [$APP] 装依赖 ==="
-pnpm install --frozen-lockfile 2>&1 | tail -1 || pnpm install 2>&1 | tail -1
+if [ "$APP" = "agent" ]; then
+  "$AGENT_NODE_BIN/node" "$AGENT_PNPM_CJS" install --frozen-lockfile --offline --store-dir="$PNPM_STORE_DIR"
+else
+  pnpm install --frozen-lockfile 2>&1 | tail -1 || pnpm install 2>&1 | tail -1
+fi
 
 echo "=== [$APP] build ==="
-pnpm build
+if [ "$APP" = "agent" ]; then
+  "$AGENT_NODE_BIN/node" "$AGENT_PNPM_CJS" build
+else
+  pnpm build
+fi
 
 echo "=== [$APP] 重启 ==="
 if pm2 describe "$APP" >/dev/null 2>&1; then
-  pm2 restart "$APP"
+  if [ "$APP" = "agent" ]; then
+    pm2 restart "$APP" --update-env
+  else
+    pm2 restart "$APP"
+  fi
 else
   PORT="$PORT" pm2 start "pnpm start -p $PORT" --name "$APP" --cwd "/opt/zmzai/$REPO_DIR"
 fi
