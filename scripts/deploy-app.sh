@@ -11,6 +11,11 @@ APP="${1:?用法: deploy-app.sh <process_name>（见 deploy-targets.sh）}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$ROOT/deploy-targets.sh"
 
+# The HK host is intentionally small. Serializing deployments prevents several
+# Next builds from exhausting memory and overwriting another app's build output.
+exec 9>"/tmp/zmzai-deploy.lock"
+flock -w 1800 9 || { echo "等待其他部署超过 30 分钟，退出"; exit 1; }
+
 # 从 deploy-targets.sh 里查这个进程的配置
 match=""
 for t in "${DEPLOY_TARGETS[@]}"; do
@@ -38,6 +43,21 @@ git checkout -- . 2>/dev/null || true
 git clean -fd pnpm-lock.yaml 2>/dev/null || true
 git reset --hard origin/main
 
+if [ "$APP" = "agent" ]; then
+  # Build in a fresh worktree. The live process keeps serving its existing
+  # release while Next writes the new .next directory.
+  SOURCE_DIR="/opt/zmzai/$REPO_DIR"
+  RELEASE_ROOT="/opt/zmzai/releases/$APP"
+  TARGET_SHA="$(git -C "$SOURCE_DIR" rev-parse origin/main)"
+  RELEASE_DIR="$RELEASE_ROOT/${TARGET_SHA}-$(date +%s)"
+  mkdir -p "$RELEASE_ROOT"
+  git -C "$SOURCE_DIR" worktree add --detach "$RELEASE_DIR" "$TARGET_SHA"
+  if [ -f "$SOURCE_DIR/.env.production" ]; then
+    ln -s "$SOURCE_DIR/.env.production" "$RELEASE_DIR/.env.production"
+  fi
+  cd "$RELEASE_DIR"
+fi
+
 echo "=== [$APP] 装依赖 ==="
 if [ "$APP" = "agent" ]; then
   "$AGENT_NODE_BIN/node" "$AGENT_PNPM_CJS" install --frozen-lockfile --offline --store-dir="$PNPM_STORE_DIR"
@@ -55,6 +75,24 @@ if [ "$APP" = "agent" ]; then
   "$AGENT_NODE_BIN/node" "$AGENT_PNPM_CJS" build
 else
   pnpm build
+fi
+
+if [ "$APP" = "agent" ]; then
+  pm2 delete "$APP" >/dev/null 2>&1 || true
+  PORT="$PORT" pm2 start "$AGENT_NODE_BIN/node $PWD/node_modules/next/dist/bin/next start -p $PORT" --name "$APP" --cwd "$PWD"
+  pm2 save >/dev/null
+  sleep 4
+  echo "=== [$APP] 健康检查 http://127.0.0.1:$PORT ==="
+  curl -fsS -o /dev/null -w "本地: %{http_code}\n" "http://127.0.0.1:$PORT/"
+  # Remove only old agent release worktrees after the new process is healthy.
+  for old_release in "$RELEASE_ROOT"/*; do
+    [ "$old_release" = "$RELEASE_DIR" ] && continue
+    [ -d "$old_release" ] || continue
+    git -C "$SOURCE_DIR" worktree remove --force "$old_release" >/dev/null 2>&1 || true
+  done
+  git -C "$SOURCE_DIR" worktree prune >/dev/null 2>&1 || true
+  echo "=== [$APP] 部署完成 → https://$DOMAIN ==="
+  exit 0
 fi
 
 echo "=== [$APP] 重启 ==="
