@@ -60,12 +60,17 @@ fi
 echo "=== [$APP] 重启 ==="
 if pm2 describe "$APP" >/dev/null 2>&1; then
   if [ "$APP" = "agent" ]; then
-    pm2 restart "$APP" --update-env
+    pm2 delete "$APP"
+    PORT="$PORT" pm2 start "$AGENT_NODE_BIN/node $PWD/node_modules/next/dist/bin/next start -p $PORT" --name "$APP" --cwd "$PWD"
   else
     pm2 restart "$APP"
   fi
 else
-  PORT="$PORT" pm2 start "pnpm start -p $PORT" --name "$APP" --cwd "/opt/zmzai/$REPO_DIR"
+  if [ "$APP" = "agent" ]; then
+    PORT="$PORT" pm2 start "$AGENT_NODE_BIN/node $PWD/node_modules/next/dist/bin/next start -p $PORT" --name "$APP" --cwd "$PWD"
+  else
+    PORT="$PORT" pm2 start "pnpm start -p $PORT" --name "$APP" --cwd "/opt/zmzai/$REPO_DIR"
+  fi
 fi
 pm2 save >/dev/null
 
