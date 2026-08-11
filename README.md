@@ -1,52 +1,66 @@
 # zmzai cloud · 牧之
 
-> 牧之的云 — OPC 项目集合枢纽站。一个人的署名，盖在一打工程上。
+`zmzai.cloud` 是 ZMZ AI 的产品矩阵主站。
 
-这是 `zmzai.cloud` 主站，牧之的 OPC 项目集合入口。它极薄：品牌首页 +
-项目索引。每个子项目（如 [`mdldm-knowledge-kit`](https://github.com/muzhi)）
-独立部署在 `*.zmzai.cloud`，本站只做品牌门牌和索引。
+它是一个薄主站：负责品牌入口、项目索引、登录入口和工作区入口。真正的业务能力分布在各个子域服务里，例如牧之知识体系、中转驿、沙箱场、Agent 使和工作台。
 
-## 文件说明
+## 职责
 
-| 文件 | 作用 |
-|---|---|
-| `BRAND.md` | **品牌故事** — 名字三层、品牌主张、视觉骨架、品牌戒律。事实来源。 |
-| `design.md` | **锁定设计系统** — Hallmark Study 路径产出，System/Tokens/CTA/Motion/Notes。 |
-| `app/globals.css` | `tokens.css` 源 — oklch 颜色 + 衬线/等宽字体 + 4pt 间距 + 指数缓动。 |
-| `components/seal.tsx` | 朱文方印 SVG — 品牌唯一签名 motif。 |
-| `lib/projects.ts` | OPC 项目清单。新增项目只改这里。 |
+- 作为 ZMZ AI 的统一入口；
+- 展示当前可用产品和规划中的产品线；
+- 进入共享登录态后的工作区页面；
+- 承载 ZMZ AI 的视觉系统、命名体系和产品索引。
 
-## 视觉立场
+## 不负责
 
-专门杀 AI vibe。不用的东西：
+- 不承接模型调用，模型调用在 [`zmzai-relay`](https://github.com/Ulanxx/zmzai-relay)；
+- 不执行代码，受限执行在 [`zmzai-sandbox`](https://github.com/Ulanxx/zmzai-sandbox)；
+- 不做 Agent 编排，任务运行在 [`zmzai-agent`](https://github.com/Ulanxx/zmzai-agent)；
+- 不注册账号，账号入口由牧之和 [`zmzai-auth`](https://github.com/Ulanxx/zmzai-auth) 承接。
 
-- ❌ 荧光绿 / 靛蓝 / 紫色渐变 hero
-- ❌ Inter / Geist 当唯一正文字体
-- ❌ 居中对齐的通用落地页
-- ❌ 四张图标方块功能卡
-- ❌ 导航栏贴图形 logo 当装饰
+## 目录
 
-用的东西：暖浆纸底、暖墨字、**印泥红** `oklch(0.46 0.150 27)` 强调、
-衬线正文 + 等宽 wordmark、朱文方印署名。详见 `BRAND.md` 与 `design.md`。
+| 路径 | 说明 |
+| --- | --- |
+| `app/page.tsx` | 主站首页 |
+| `app/projects/page.tsx` | 产品矩阵 |
+| `app/workspace/` | 登录后的工作区入口 |
+| `lib/projects.ts` | 产品线数据源，新增子项目从这里开始 |
+| `providers/auth/session.ts` | 共享登录态读取 |
+| `components/seal.tsx` | 牧之方印 |
+| `components/wordmark.tsx` | `zmzai.cloud` wordmark |
+| `BRAND.md` | 品牌故事、命名和视觉约束 |
+| `design.md` | 设计系统说明 |
+| `scripts/` | 部署、备份、Mongo 初始化和对账脚本 |
 
 ## 本地运行
 
 ```bash
 pnpm install
 pnpm dev
-# http://localhost:3000
 ```
 
-需 Node 20+。字体走 `next/font/google`（Noto Serif SC + JetBrains Mono），
-首次构建联网下载，之后缓存。
+常用检查：
 
-## 加一个 OPC 子项目
+```bash
+pnpm typecheck
+pnpm lint
+```
 
-1. 在 `lib/projects.ts` 加一条，`status` 选 `live`/`building`/`planned`。
-2. 子项目仓里按 `design.md` 的 `## Variants` 走同一底盘，可只改
-   `--color-accent` 为项目级色。
-3. 子域指向：`<slug>.zmzai.cloud`。
+## 环境变量
 
-## 许可
+| 变量 | 默认值 | 说明 |
+| --- | --- | --- |
+| `APP_URL` | `http://localhost:3013` | 当前主站地址 |
+| `MONGODB_URI` | 无 | 共享账号和 session 数据库 |
+| `AUTH_SECRET` | 无 | 必须与牧之账号体系一致 |
+| `SESSION_COOKIE_NAME` | `muzhi_session` | 登录态 cookie 名称 |
+| `SESSION_COOKIE_DOMAIN` | 空 | 多子域共享登录时使用 |
 
-Apache-2.0。署名：牧之。
+## 加一个子项目
+
+1. 在 `lib/projects.ts` 增加项目，`status` 选 `live`、`building` 或 `planned`；
+2. 子项目沿用 `BRAND.md` 和 `design.md` 的命名、纸面风和方印系统；
+3. 子域使用 `<slug>.zmzai.cloud`，主站只做入口和索引。
+
+Apache-2.0 · 牧之
