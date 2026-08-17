@@ -1,60 +1,28 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 import { Logo } from "@zmzai/theme";
 import { allProducts, statusLabel, type ProductLine } from "@/lib/projects";
-import { useInView } from "@/lib/use-in-view";
 import { ProductShowcase } from "@/components/product-showcase";
 
 const AUTH_URL = process.env.NEXT_PUBLIC_AUTH_URL ?? "https://auth.zmzai.cloud";
 const WORKSPACE_URL = "https://zmzai.cloud/workspace";
 
-/* ── Scroll progress bar ── */
-function ScrollProgress() {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const onScroll = () => {
-      const h = document.documentElement.scrollHeight - window.innerHeight;
-      const p = h > 0 ? window.scrollY / h : 0;
-      if (ref.current) ref.current.style.transform = `scaleX(${p})`;
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-  return <div ref={ref} className="scroll-progress" />;
-}
+/* ── Slide 数据 ── */
+type Slide =
+  | { type: "hero" }
+  | { type: "product"; product: ProductLine; index: number }
+  | { type: "cta" };
 
-/* ── Animated counter — ticks from 0 to target when visible ── */
-function AnimatedNumber({
-  target,
-  isVisible,
-}: {
-  target: number;
-  isVisible: boolean;
-}) {
-  const [value, setValue] = useState(0);
-  const raf = useRef(0);
+const slides: Slide[] = [
+  { type: "hero" },
+  ...allProducts.map((p, i) => ({ type: "product" as const, product: p, index: i })),
+  { type: "cta" },
+];
 
-  useEffect(() => {
-    if (!isVisible) return;
-    const start = performance.now();
-    const dur = 900;
-    const tick = (now: number) => {
-      const t = Math.min((now - start) / dur, 1);
-      const eased = 1 - Math.pow(1 - t, 3);
-      setValue(Math.round(eased * target));
-      if (t < 1) raf.current = requestAnimationFrame(tick);
-    };
-    raf.current = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf.current);
-  }, [isVisible, target]);
-
-  return <span className="count-up">{String(value).padStart(2, "0")}</span>;
-}
-
-/* ── Status badge — 三种状态不同视觉 ── */
+/* ── Status badge ── */
 function StatusBadge({ status }: { status: ProductLine["status"] }) {
   if (status === "live") {
     return (
@@ -89,232 +57,239 @@ function StatusBadge({ status }: { status: ProductLine["status"] }) {
   );
 }
 
-/* ── Reveal section wrapper ── */
-function RevealSection({
-  children,
-  className = "",
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  const { ref, isVisible } = useInView();
+/* ── 主页面 ── */
+export default function HomePage() {
+  const [current, setCurrent] = useState(0);
+  const [direction, setDirection] = useState<"next" | "prev">("next");
+  const isTransitioning = useRef(false);
+
+  const goTo = useCallback(
+    (index: number, dir: "next" | "prev") => {
+      if (isTransitioning.current) return;
+      if (index < 0 || index >= slides.length) return;
+      isTransitioning.current = true;
+      setDirection(dir);
+      setCurrent(index);
+      setTimeout(() => {
+        isTransitioning.current = false;
+      }, 650);
+    },
+    []
+  );
+
+  const goNext = useCallback(() => goTo(current + 1, "next"), [current, goTo]);
+  const goPrev = useCallback(() => goTo(current - 1, "prev"), [current, goTo]);
+
+  /* 键盘 */
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight" || e.key === "ArrowDown" || e.key === " ") {
+        e.preventDefault();
+        goNext();
+      }
+      if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        e.preventDefault();
+        goPrev();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [goNext, goPrev]);
+
+  /* 滚轮 */
+  useEffect(() => {
+    let lastWheel = 0;
+    const onWheel = (e: WheelEvent) => {
+      const now = Date.now();
+      if (now - lastWheel < 800) return;
+      lastWheel = now;
+      if (e.deltaY > 30) goNext();
+      else if (e.deltaY < -30) goPrev();
+    };
+    window.addEventListener("wheel", onWheel, { passive: true });
+    return () => window.removeEventListener("wheel", onWheel);
+  }, [goNext, goPrev]);
+
   return (
-    <div
-      ref={ref}
-      className={`${className} reveal ${isVisible ? "visible" : ""}`}
-    >
-      {children}
+    <div className="slide-container">
+      {/* ── 左右箭头 ── */}
+      <button
+        className="slide-arrow slide-arrow-left"
+        onClick={goPrev}
+        disabled={current === 0}
+        aria-label="上一页"
+      >
+        ←
+      </button>
+      <button
+        className="slide-arrow slide-arrow-right"
+        onClick={goNext}
+        disabled={current === slides.length - 1}
+        aria-label="下一页"
+      >
+        →
+      </button>
+
+      {/* ─ 底部导航点 ── */}
+      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2">
+        {slides.map((_, i) => (
+          <button
+            key={i}
+            className={`slide-dot ${i === current ? "active" : ""}`}
+            onClick={() => goTo(i, i > current ? "next" : "prev")}
+            aria-label={`第 ${i + 1} 页`}
+          />
+        ))}
+      </div>
+
+      {/* ── 页码 ── */}
+      <div className="fixed bottom-8 right-8 z-40 font-mono text-[10px] text-muted tracking-widest">
+        {String(current + 1).padStart(2, "0")} / {String(slides.length).padStart(2, "0")}
+      </div>
+
+      {/* ── Slides ── */}
+      {slides.map((slide, i) => (
+        <div
+          key={i}
+          className={`slide ${
+            i === current
+              ? "active"
+              : i < current
+                ? "exit-left"
+                : ""
+          }`}
+        >
+          {slide.type === "hero" && <HeroSlide />}
+          {slide.type === "product" && (
+            <ProductSlide product={slide.product} index={slide.index} />
+          )}
+          {slide.type === "cta" && <CtaSlide />}
+        </div>
+      ))}
     </div>
   );
 }
 
-/* ── Hero v2 — 产品星座网格 ── */
-function HeroConstellation() {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-
+/* ── Hero Slide ── */
+function HeroSlide() {
   return (
-    <div className="relative w-full h-full min-h-[400px] flex items-center justify-center">
-      {/* 背景网格 */}
-      <div className="absolute inset-0 hero-grid-bg opacity-30" />
+    <div className="w-full max-w-5xl mx-auto px-6 lg:px-0 flex flex-col justify-center gap-8">
+      <div className="flex items-center gap-3">
+        <Logo size={32} />
+        <span className="font-mono text-[11px] tracking-[0.2em] text-muted uppercase">
+          zmzai.cloud
+        </span>
+      </div>
 
-      {/* 产品网格 */}
-      <div className="relative grid grid-cols-3 gap-3 p-4 max-w-[360px]">
-        {allProducts.map((p, i) => (
-          <div
-            key={p.id}
-            className="product-tile border border-line rounded-sm bg-paper/80 backdrop-blur-sm p-3 flex flex-col gap-2 min-w-[100px]"
-            style={{
-              opacity: mounted ? 1 : 0,
-              transform: mounted ? "translateY(0)" : "translateY(20px)",
-              transition: `opacity 600ms var(--ease-out-expo) ${i * 100}ms, transform 600ms var(--ease-out-expo) ${i * 100}ms`,
-            }}
-          >
-            <div className="flex items-center justify-between">
-              <span className="font-mono text-[10px] text-muted">
-                {p.letter}
-              </span>
-              <span
-                className={`size-1.5 rounded-full ${
-                  p.status === "live"
-                    ? "bg-success"
-                    : p.status === "building"
-                      ? "bg-accent"
-                      : "bg-muted/40"
-                }`}
-              />
-            </div>
-            <div>
-              <div className="text-xs font-semibold text-ink leading-tight">
-                {p.name}
-              </div>
-              <div className="text-[10px] text-muted leading-tight mt-0.5 truncate">
-                {p.tagline}
-              </div>
-            </div>
-          </div>
-        ))}
+      <div className="flex flex-col gap-6">
+        <p className="font-mono text-xs tracking-[0.2em] text-muted uppercase">
+          AI Product System
+        </p>
+        <h1 className="headline text-5xl sm:text-6xl md:text-7xl lg:text-8xl">
+          牧之的云，
+          <br />
+          <span className="text-muted">AI 产品系统。</span>
+        </h1>
+        <p className="max-w-lg text-lg leading-relaxed text-ink-2">
+          Relay、Sandbox、Agent 工作台——各自独立运行，从同一个入口出发。
+        </p>
+      </div>
+
+      <div className="flex items-center gap-6 pt-4">
+        <a
+          href={`${AUTH_URL}/login?next=${encodeURIComponent(WORKSPACE_URL)}`}
+          className="btn-primary"
+        >
+          登录 <span className="arrow-slide">→</span>
+        </a>
+        <Link
+          href="/projects"
+          className="font-mono text-sm text-muted transition-colors hover:text-ink"
+        >
+          全部项目
+        </Link>
       </div>
     </div>
   );
 }
 
-/* ── 主页面 ── */
-export default function HomePage() {
-  return (
-    <div className="flex flex-col">
-      <ScrollProgress />
-
-      {/* ── Hero — 左文右产品网格 ── */}
-      <section className="min-h-screen flex items-center">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 w-full">
-          {/* 左侧文字 */}
-          <div className="flex flex-col justify-center gap-8 py-20 lg:py-0">
-            <div className="flex items-center gap-3 hero-reveal">
-              <Logo size={32} />
-              <span className="font-mono text-[11px] tracking-[0.2em] text-muted uppercase">
-                zmzai.cloud
-              </span>
-            </div>
-
-            <div className="flex flex-col gap-6">
-              <p className="font-mono text-xs tracking-[0.2em] text-muted uppercase hero-reveal">
-                AI Product System
-              </p>
-              <h1 className="headline text-5xl sm:text-6xl md:text-7xl hero-reveal">
-                牧之的云，
-                <br />
-                <span className="text-muted">AI 产品系统。</span>
-              </h1>
-              <p className="max-w-lg text-lg leading-relaxed text-ink-2 hero-reveal">
-                Relay、Sandbox、Agent 工作台——各自独立运行，从同一个入口出发。
-              </p>
-            </div>
-
-            <div className="flex items-center gap-6 pt-4 hero-reveal">
-              <a
-                href={`${AUTH_URL}/login?next=${encodeURIComponent(WORKSPACE_URL)}`}
-                className="btn-primary"
-              >
-                登录 <span className="arrow-slide">→</span>
-              </a>
-              <Link
-                href="/projects"
-                className="font-mono text-sm text-muted transition-colors hover:text-ink"
-              >
-                全部项目
-              </Link>
-            </div>
-          </div>
-
-          {/* 右侧产品星座 */}
-          <div className="hidden lg:flex items-center justify-center relative">
-            <HeroConstellation />
-          </div>
-        </div>
-      </section>
-
-      {/* ── 产品大区块 — 每个产品差异化展示 ── */}
-      {allProducts.map((p, i) => (
-        <ProductSection key={p.id} product={p} index={i} />
-      ))}
-
-      {/* ── 底部 CTA ── */}
-      <RevealSection className="border-t border-line flex flex-col items-start gap-5 py-20">
-        <p className="font-mono text-xs tracking-[0.2em] text-muted uppercase">
-          Get Started
-        </p>
-        <p className="max-w-md text-ink-2">
-          登录后可通过统一工作台访问所有产品。API 开发者可直接接入 Relay。
-        </p>
-        <div className="flex items-center gap-6">
-          <a
-            href={`${AUTH_URL}/login?next=${encodeURIComponent(WORKSPACE_URL)}`}
-            className="btn-primary"
-          >
-            登录工作台 <span className="arrow-slide">→</span>
-          </a>
-          <a
-            href="https://m.zmzai.cloud/docs"
-            className="font-mono text-sm text-muted transition-colors hover:text-ink"
-          >
-            API 文档
-          </a>
-        </div>
-      </RevealSection>
-    </div>
-  );
-}
-
-/* ── 产品区块组件 — 统一底色 + 装饰 + 大展示区 ── */
-function ProductSection({
+/* ── Product Slide ── */
+function ProductSlide({
   product: p,
   index: i,
 }: {
   product: ProductLine;
   index: number;
 }) {
-  const { ref, isVisible } = useInView();
-
   return (
-    <div
-      ref={ref}
-      className={`reveal ${isVisible ? "visible" : ""}`}
-    >
-      {/* 区块间分割线 */}
-      {i > 0 && (
-        <div className="max-w-5xl mx-auto px-6 lg:px-0">
-          <div className="section-divider">
-            <span className="section-divider-dot" />
-            <span className="section-divider-dot" />
-            <span className="section-divider-line" />
-          </div>
-        </div>
-      )}
-
-      <div className="max-w-5xl mx-auto px-6 lg:px-0 py-20 lg:py-28">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16 items-start">
-          {/* 左侧信息 — 占 3/5 */}
-          <div className="lg:col-span-3 relative">
-            {/* 水印编号 */}
-            <span className="section-watermark hidden lg:block">
+    <div className="w-full max-w-5xl mx-auto px-6 lg:px-0">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16 items-center">
+        {/* 左侧信息 — 3/5 */}
+        <div className="lg:col-span-3">
+          <div className="flex items-center gap-3 mb-8">
+            <span className="font-mono text-xs tracking-widest text-muted">
               {String(i + 1).padStart(2, "0")}
             </span>
-
-            <div className="flex items-center gap-3 mb-8">
-              <span className="font-mono text-xs tracking-widest text-muted">
-                <AnimatedNumber target={i + 1} isVisible={isVisible} />
-              </span>
-              <StatusBadge status={p.status} />
-            </div>
-
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-5">
-              {p.name}
-            </h2>
-            <p className="text-lg sm:text-xl leading-relaxed text-ink-2 mb-4 font-medium">
-              {p.tagline}
-            </p>
-            <p className="text-sm leading-7 text-ink-2/80 max-w-xl mb-10">
-              {p.description}
-            </p>
-
-            <div className="flex items-center gap-6">
-              <a href={p.href} className="btn-primary">
-                进入产品 <span className="arrow-slide">→</span>
-              </a>
-              <span className="font-mono text-xs text-muted">
-                {p.href.replace(/^https?:\/\//, "")}
-              </span>
-            </div>
+            <StatusBadge status={p.status} />
           </div>
 
-          {/* 右侧视觉展示 — 占 2/5，更大更突出 */}
-          <div className="lg:col-span-2 flex items-start justify-center lg:sticky lg:top-24">
-            <div className="w-full max-w-md">
-              <ProductShowcase productId={p.id} />
-            </div>
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-5">
+            {p.name}
+          </h2>
+          <p className="text-lg sm:text-xl leading-relaxed text-ink-2 mb-4 font-medium">
+            {p.tagline}
+          </p>
+          <p className="text-sm leading-7 text-ink-2/80 max-w-xl mb-10">
+            {p.description}
+          </p>
+
+          <div className="flex items-center gap-6">
+            <a href={p.href} className="btn-primary">
+              进入产品 <span className="arrow-slide">→</span>
+            </a>
+            <span className="font-mono text-xs text-muted">
+              {p.href.replace(/^https?:\/\//, "")}
+            </span>
           </div>
         </div>
+
+        {/* 右侧展示 — 2/5 */}
+        <div className="lg:col-span-2 flex items-center justify-center">
+          <div className="w-full max-w-md">
+            <ProductShowcase productId={p.id} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── CTA Slide ── */
+function CtaSlide() {
+  return (
+    <div className="w-full max-w-3xl mx-auto px-6 lg:px-0 flex flex-col items-start gap-6">
+      <p className="font-mono text-xs tracking-[0.2em] text-muted uppercase">
+        Get Started
+      </p>
+      <h2 className="text-4xl sm:text-5xl font-bold tracking-tight">
+        开始使用
+      </h2>
+      <p className="text-lg text-ink-2 max-w-md">
+        登录后可通过统一工作台访问所有产品。API 开发者可直接接入 Relay。
+      </p>
+      <div className="flex items-center gap-6 pt-4">
+        <a
+          href={`${AUTH_URL}/login?next=${encodeURIComponent(WORKSPACE_URL)}`}
+          className="btn-primary"
+        >
+          登录工作台 <span className="arrow-slide">→</span>
+        </a>
+        <a
+          href="https://m.zmzai.cloud/docs"
+          className="font-mono text-sm text-muted transition-colors hover:text-ink"
+        >
+          API 文档
+        </a>
       </div>
     </div>
   );

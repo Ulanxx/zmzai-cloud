@@ -549,4 +549,96 @@
       transform: scale(1);
     }
   }
+
+  /* ── Slideshow — full-screen product slides ── */
+  .slide-container {
+    position: relative;
+    width: 100%;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    opacity: 0;
+    transform: translateX(60px);
+    transition: opacity 600ms var(--ease-out-expo),
+                transform 600ms var(--ease-out-expo);
+    pointer-events: none;
+  }
+
+  .slide.active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+
+  .slide.exit-left {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+
+  /* ── Slide nav dots ── */
+  .slide-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-line);
+    transition: all 300ms var(--ease-out);
+    cursor: pointer;
+  }
+
+  .slide-dot.active {
+    background: var(--color-accent);
+    width: 20px;
+    border-radius: 3px;
+  }
+
+  .slide-dot:hover {
+    background: var(--color-muted);
+  }
+
+  /* ── Slide arrow buttons ── */
+  .slide-arrow {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 40;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-line);
+    background: var(--color-paper);
+    color: var(--color-muted);
+    cursor: pointer;
+    transition: all 200ms var(--ease-out);
+    opacity: 0;
+  }
+
+  .slide-container:hover .slide-arrow {
+    opacity: 1;
+  }
+
+  .slide-arrow:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .slide-arrow-left {
+    left: 1.5rem;
+  }
+
+  .slide-arrow-right {
+    right: 1.5rem;
+  }
+
+  .slide-arrow:disabled {
+    opacity: 0 !important;
+    cursor: default;
+  }
 }
