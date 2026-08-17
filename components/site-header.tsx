@@ -48,6 +48,21 @@ export function SiteHeader() {
           </Button>
         }
       >
+        {[
+          { label: "产品", href: "/#products" },
+          { label: "工作流", href: "/#workflow" },
+          { label: "常见问题", href: "/#faq" },
+          { label: "博客", href: "https://muzhi.zmzai.cloud", external: true },
+        ].map((item) => (
+          <a
+            key={item.label}
+            href={item.href}
+            {...(item.external ? { target: "_blank", rel: "noreferrer" } : {})}
+            className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium text-ink-2 transition-colors hover:bg-surface-2 hover:text-ink"
+          >
+            {item.label}
+          </a>
+        ))}
         <Link
           href="/projects"
           className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
