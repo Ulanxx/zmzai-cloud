@@ -1,85 +1,171 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Logo } from "@zmzai/theme";
 import { allProducts, statusLabel, type ProductLine } from "@/lib/projects";
 import { useInView } from "@/lib/use-in-view";
+import { ProductShowcase } from "@/components/product-showcase";
 
 const AUTH_URL = process.env.NEXT_PUBLIC_AUTH_URL ?? "https://auth.zmzai.cloud";
 const WORKSPACE_URL = "https://zmzai.cloud/workspace";
 
-const statusDot: Record<ProductLine["status"], string> = {
-  live: "bg-success",
-  building: "bg-accent",
-  planned: "bg-muted",
-};
+/* ── Scroll progress bar ── */
+function ScrollProgress() {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const onScroll = () => {
+      const h = document.documentElement.scrollHeight - window.innerHeight;
+      const p = h > 0 ? window.scrollY / h : 0;
+      if (ref.current) ref.current.style.transform = `scaleX(${p})`;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  return <div ref={ref} className="scroll-progress" />;
+}
 
-function RevealSection({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+/* ── Animated counter — ticks from 0 to target when visible ── */
+function AnimatedNumber({
+  target,
+  isVisible,
+}: {
+  target: number;
+  isVisible: boolean;
+}) {
+  const [value, setValue] = useState(0);
+  const raf = useRef(0);
+
+  useEffect(() => {
+    if (!isVisible) return;
+    const start = performance.now();
+    const dur = 900;
+    const tick = (now: number) => {
+      const t = Math.min((now - start) / dur, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      setValue(Math.round(eased * target));
+      if (t < 1) raf.current = requestAnimationFrame(tick);
+    };
+    raf.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf.current);
+  }, [isVisible, target]);
+
+  return <span className="count-up">{String(value).padStart(2, "0")}</span>;
+}
+
+/* ── Status badge — 三种状态不同视觉 ── */
+function StatusBadge({ status }: { status: ProductLine["status"] }) {
+  if (status === "live") {
+    return (
+      <div className="flex items-center gap-2">
+        <span className="relative flex size-2">
+          <span className="status-pulse absolute inset-0 rounded-full bg-success" />
+          <span className="relative size-2 rounded-full bg-success" />
+        </span>
+        <span className="font-mono text-[10px] tracking-widest text-success uppercase">
+          {statusLabel(status)}
+        </span>
+      </div>
+    );
+  }
+  if (status === "building") {
+    return (
+      <div className="flex items-center gap-2">
+        <span className="status-progress w-8 h-1.5 bg-accent/20 text-accent" />
+        <span className="font-mono text-[10px] tracking-widest text-accent uppercase">
+          {statusLabel(status)}
+        </span>
+      </div>
+    );
+  }
+  return (
+    <div className="flex items-center gap-2">
+      <span className="status-dashed size-3 text-muted" />
+      <span className="font-mono text-[10px] tracking-widest text-muted uppercase">
+        {statusLabel(status)}
+      </span>
+    </div>
+  );
+}
+
+/* ── Reveal section wrapper ── */
+function RevealSection({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   const { ref, isVisible } = useInView();
   return (
-    <div ref={ref} className={`${className} reveal ${isVisible ? "visible" : ""}`}>
+    <div
+      ref={ref}
+      className={`${className} reveal ${isVisible ? "visible" : ""}`}
+    >
       {children}
     </div>
   );
 }
 
-/** Hero 右侧浮动动画 — 产品卡片漂浮 */
-function HeroVisual() {
+/* ── Hero v2 — 产品星座网格 ── */
+function HeroConstellation() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  const cards = allProducts.slice(0, 4).map((p, i) => ({
-    ...p,
-    x: [10, 60, 30, 70][i],
-    y: [15, 35, 55, 75][i],
-    delay: i * 200,
-    rotation: [-3, 2, -2, 3][i],
-  }));
-
   return (
-    <div className="relative h-full w-full min-h-[400px]">
-      {cards.map((card) => (
-        <div
-          key={card.id}
-          className="absolute transition-all duration-1000 ease-out"
-          style={{
-            left: `${card.x}%`,
-            top: `${card.y}%`,
-            transform: mounted
-              ? `translate(-50%, -50%) rotate(${card.rotation}deg)`
-              : `translate(-50%, -50%) rotate(${card.rotation}deg) scale(0.8)`,
-            opacity: mounted ? 1 : 0,
-            transitionDelay: `${card.delay}ms`,
-          }}
-        >
-          <div className="card-lift rounded-lg border border-line bg-paper p-4 shadow-lg backdrop-blur-sm">
-            <div className="flex items-center gap-2 mb-2">
-              <span className={`size-2 rounded-full ${statusDot[card.status]}`} />
-              <span className="font-mono text-[10px] text-muted uppercase tracking-wider">
-                {statusLabel(card.status)}
-              </span>
-            </div>
-            <p className="font-semibold text-sm text-ink">{card.name}</p>
-            <p className="text-xs text-muted mt-1 max-w-[120px]">{card.tagline}</p>
-          </div>
-        </div>
-      ))}
+    <div className="relative w-full h-full min-h-[400px] flex items-center justify-center">
+      {/* 背景网格 */}
+      <div className="absolute inset-0 hero-grid-bg opacity-30" />
 
-      {/* 背景装饰网格 */}
-      <div className="absolute inset-0 opacity-[0.03]" style={{
-        backgroundImage: `linear-gradient(var(--color-rule) 1px, transparent 1px), linear-gradient(90deg, var(--color-rule) 1px, transparent 1px)`,
-        backgroundSize: '40px 40px',
-      }} />
+      {/* 产品网格 */}
+      <div className="relative grid grid-cols-3 gap-3 p-4 max-w-[360px]">
+        {allProducts.map((p, i) => (
+          <div
+            key={p.id}
+            className="product-tile border border-line rounded-sm bg-paper/80 backdrop-blur-sm p-3 flex flex-col gap-2 min-w-[100px]"
+            style={{
+              opacity: mounted ? 1 : 0,
+              transform: mounted ? "translateY(0)" : "translateY(20px)",
+              transition: `opacity 600ms var(--ease-out-expo) ${i * 100}ms, transform 600ms var(--ease-out-expo) ${i * 100}ms`,
+            }}
+          >
+            <div className="flex items-center justify-between">
+              <span className="font-mono text-[10px] text-muted">
+                {p.letter}
+              </span>
+              <span
+                className={`size-1.5 rounded-full ${
+                  p.status === "live"
+                    ? "bg-success"
+                    : p.status === "building"
+                      ? "bg-accent"
+                      : "bg-muted/40"
+                }`}
+              />
+            </div>
+            <div>
+              <div className="text-xs font-semibold text-ink leading-tight">
+                {p.name}
+              </div>
+              <div className="text-[10px] text-muted leading-tight mt-0.5 truncate">
+                {p.tagline}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
 
+/* ── 主页面 ── */
 export default function HomePage() {
   return (
     <div className="flex flex-col">
-      {/* ── Hero — 左文右图 ── */}
+      <ScrollProgress />
+
+      {/* ── Hero — 左文右产品网格 ── */}
       <section className="min-h-screen flex items-center">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 w-full">
           {/* 左侧文字 */}
@@ -101,7 +187,7 @@ export default function HomePage() {
                 <span className="text-muted">AI 产品系统。</span>
               </h1>
               <p className="max-w-lg text-lg leading-relaxed text-ink-2 hero-reveal">
-                中转驿、沙箱场、Agent 工作台——各自独立运行，从同一个入口出发。
+                Relay、Sandbox、Agent 工作台——各自独立运行，从同一个入口出发。
               </p>
             </div>
 
@@ -110,7 +196,7 @@ export default function HomePage() {
                 href={`${AUTH_URL}/login?next=${encodeURIComponent(WORKSPACE_URL)}`}
                 className="btn-primary"
               >
-                登录 →
+                登录 <span className="arrow-slide">→</span>
               </a>
               <Link
                 href="/projects"
@@ -121,49 +207,16 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* 右侧动画 */}
+          {/* 右侧产品星座 */}
           <div className="hidden lg:flex items-center justify-center relative">
-            <HeroVisual />
+            <HeroConstellation />
           </div>
         </div>
       </section>
 
-      {/* ── 产品大区块 ── */}
+      {/* ── 产品大区块 — 每个产品差异化展示 ── */}
       {allProducts.map((p, i) => (
-        <RevealSection
-          key={p.id}
-          className={`border-t border-line ${i % 2 === 0 ? "bg-surface" : "bg-paper"}`}
-        >
-          <div className="max-w-3xl py-20 lg:py-28">
-            <div className="flex items-center gap-3 mb-6">
-              <span className="font-mono text-xs tracking-widest text-muted">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <div className="flex items-center gap-2">
-                <span className={`size-2 rounded-full ${statusDot[p.status]}`} />
-                <span className="font-mono text-[10px] tracking-widest text-muted uppercase">
-                  {statusLabel(p.status)}
-                </span>
-              </div>
-            </div>
-
-            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight mb-4">{p.name}</h2>
-            <p className="text-lg leading-relaxed text-ink-2 mb-3">{p.tagline}</p>
-            <p className="text-sm leading-7 text-ink-2/80 max-w-2xl mb-8">{p.description}</p>
-
-            <div className="flex items-center gap-6">
-              <a
-                href={p.href}
-                className="btn-primary"
-              >
-                进入产品 →
-              </a>
-              <span className="font-mono text-xs text-muted">
-                {p.href.replace(/^https?:\/\//, "")}
-              </span>
-            </div>
-          </div>
-        </RevealSection>
+        <ProductSection key={p.id} product={p} index={i} />
       ))}
 
       {/* ── 底部 CTA ── */}
@@ -172,14 +225,14 @@ export default function HomePage() {
           Get Started
         </p>
         <p className="max-w-md text-ink-2">
-          登录后可通过统一工作台访问所有产品。API 开发者可直接接入中转驿。
+          登录后可通过统一工作台访问所有产品。API 开发者可直接接入 Relay。
         </p>
         <div className="flex items-center gap-6">
           <a
             href={`${AUTH_URL}/login?next=${encodeURIComponent(WORKSPACE_URL)}`}
             className="btn-primary"
           >
-            登录工作台 →
+            登录工作台 <span className="arrow-slide">→</span>
           </a>
           <a
             href="https://m.zmzai.cloud/docs"
@@ -189,6 +242,64 @@ export default function HomePage() {
           </a>
         </div>
       </RevealSection>
+    </div>
+  );
+}
+
+/* ── 产品区块组件 — 带 showcase + 动画编号 ── */
+function ProductSection({
+  product: p,
+  index: i,
+}: {
+  product: ProductLine;
+  index: number;
+}) {
+  const { ref, isVisible } = useInView();
+
+  return (
+    <div
+      ref={ref}
+      className={`border-t border-line reveal ${isVisible ? "visible" : ""} ${
+        i % 2 === 0 ? "bg-surface" : "bg-paper"
+      }`}
+    >
+      <div className="max-w-5xl py-20 lg:py-28">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+          {/* 左侧信息 */}
+          <div>
+            <div className="flex items-center gap-3 mb-6">
+              <span className="font-mono text-xs tracking-widest text-muted">
+                <AnimatedNumber target={i + 1} isVisible={isVisible} />
+              </span>
+              <StatusBadge status={p.status} />
+            </div>
+
+            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight mb-4">
+              {p.name}
+            </h2>
+            <p className="text-lg leading-relaxed text-ink-2 mb-3">
+              {p.tagline}
+            </p>
+            <p className="text-sm leading-7 text-ink-2/80 max-w-2xl mb-8">
+              {p.description}
+            </p>
+
+            <div className="flex items-center gap-6">
+              <a href={p.href} className="btn-primary">
+                进入产品 <span className="arrow-slide">→</span>
+              </a>
+              <span className="font-mono text-xs text-muted">
+                {p.href.replace(/^https?:\/\//, "")}
+              </span>
+            </div>
+          </div>
+
+          {/* 右侧视觉展示 */}
+          <div className="hidden lg:flex items-start justify-end">
+            <ProductShowcase productId={p.id} />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

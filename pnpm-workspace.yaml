@@ -1,2 +1,4 @@
 allowBuilds:
   sharp: false
+minimumReleaseAgeExclude:
+  - '@zmzai/theme@0.3.1'
