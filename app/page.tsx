@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { allProducts, statusLabel, type ProductLine } from "@/lib/projects";
 import { ProductShowcase } from "@/components/product-showcase";
@@ -37,7 +37,7 @@ function StatusBadge({ status }: { status: ProductLine["status"] }) {
   );
 }
 
-/* ─ FAQ item ── */
+/* ── FAQ item ── */
 function FaqItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
   return (
@@ -53,36 +53,135 @@ function FaqItem({ q, a }: { q: string; a: string }) {
   );
 }
 
-/* ─ Workflow steps data ── */
+/* ── AnimatedNumber — 进入视口后从 0 计数 ── */
+function AnimatedNumber({ value, suffix = "" }: { value: number; suffix?: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const [display, setDisplay] = useState(0);
+  const started = useRef(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !started.current) {
+          started.current = true;
+          const start = performance.now();
+          const dur = 1200;
+          const tick = (now: number) => {
+            const t = Math.min((now - start) / dur, 1);
+            const eased = 1 - Math.pow(1 - t, 3);
+            setDisplay(Math.round(eased * value));
+            if (t < 1) requestAnimationFrame(tick);
+          };
+          requestAnimationFrame(tick);
+        }
+      },
+      { threshold: 0.5 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [value]);
+
+  return (
+    <span ref={ref} className="count-num">
+      {display}
+      {suffix}
+    </span>
+  );
+}
+
+/* ── 内联 SVG 图标（不用 emoji） ── */
+function IconGate() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M4 21V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v16" />
+      <path d="M2 21h20" />
+      <path d="M12 3v18" />
+    </svg>
+  );
+}
+function IconPlug() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M12 22v-5" />
+      <path d="M9 8V2M15 8V2" />
+      <path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8h12z" />
+    </svg>
+  );
+}
+function IconAudit() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      <path d="m9 12 2 2 4-4" />
+    </svg>
+  );
+}
+
+/* ── Workflow steps ── */
 const workflowSteps = [
   {
     num: "01",
+    badge: "step 1",
     title: "统一入口",
+    product: "hub",
+    note: "一个账号通行所有产品，工作台聚合全部入口",
     desc: "一个账号，访问所有 AI 产品。Relay 提供模型接口，Sandbox 提供执行环境，Agent 编排任务流。",
   },
   {
     num: "02",
+    badge: "step 2",
     title: "模型路由",
+    product: "relay",
+    note: "选定接口后，鉴权、计费、路由自动带入调用链",
     desc: "Relay 统一接入 OpenAI、Anthropic、DeepSeek 等模型，自动故障转移和智能路由。",
   },
   {
     num: "03",
+    badge: "step 3",
     title: "安全执行",
+    product: "sandbox",
+    note: "每个任务独立容器，资源与网络全程受限",
     desc: "Sandbox 为每个 Agent 任务提供隔离容器，限制资源、网络和超时，确保代码安全运行。",
   },
   {
     num: "04",
+    badge: "step 4",
     title: "知识沉淀",
+    product: "muzhi",
+    note: "实践沉淀为文章，交付整合进工作台",
     desc: "Muzhi 博客记录技术实践，WorkOS 工作台整合写作、检索、交付全流程。",
   },
 ];
 
-/* ── Product tab data ── */
-const productTabs = allProducts.map((p) => ({
-  id: p.id,
-  name: p.name,
-  tagline: p.tagline,
-}));
+/* ── Integrations ── */
+const integrations = [
+  "OpenAI",
+  "Anthropic",
+  "DeepSeek",
+  "Google Gemini",
+  "Moonshot",
+  "智谱 GLM",
+  "通义千问",
+  "OpenRouter",
+];
+
+/* ── Stats ── */
+const stats = [
+  { value: 6, suffix: "", label: "条产品线" },
+  { value: 8, suffix: "+", label: "模型渠道" },
+  { value: 1, suffix: "", label: "统一账号" },
+  { value: 0, suffix: "", label: "厂商锁定" },
+];
+
+/* ── CTA checklist ── */
+const ctaChecks = [
+  "注册即得统一账号，所有产品一登即达",
+  "Relay 兼容 OpenAI 接口标准，换个 base_url 就能接入",
+  "Muzhi 知识内容免费开放阅读",
+  "Sandbox 与 Agent 内测中，登录后可申请体验",
+];
 
 /* ── FAQ data ── */
 const faqs = [
@@ -112,15 +211,15 @@ const faqs = [
 export default function HomePage() {
   const [activeStep, setActiveStep] = useState(0);
   const [activeTab, setActiveTab] = useState("relay");
+  const step = workflowSteps[activeStep];
 
   return (
     <main>
       {/* ═══════════════════════════════════════════
-          HERO
+          1. HERO — 大标题 + 双 CTA + 管线 breadcrumb
       ═══════════════════════════════════════════ */}
-      <section className="pt-12 pb-16 lg:pt-20 lg:pb-20">
+      <section className="pt-12 pb-16 lg:pt-20 lg:pb-24">
         <div className="max-w-5xl mx-auto px-6 lg:px-0">
-          {/* Hero text */}
           <div className="max-w-3xl">
             <p className="font-mono text-xs tracking-[0.2em] text-muted uppercase mb-6">
               AI Product System
@@ -136,7 +235,7 @@ export default function HomePage() {
             </p>
 
             {/* Dual CTA */}
-            <div className="flex flex-wrap items-center gap-4">
+            <div className="flex flex-wrap items-center gap-4 mb-14">
               <a
                 href={`${AUTH_URL}/login?next=${encodeURIComponent(WORKSPACE_URL)}`}
                 className="btn-solid"
@@ -150,68 +249,129 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Feature icon row */}
-          <div className="mt-20 flex flex-wrap gap-2">
-            {[
-              { symbol: "M", label: "模型路由" },
-              { symbol: "S", label: "沙箱执行" },
-              { symbol: "A", label: "Agent 编排" },
-              { symbol: "W", label: "知识沉淀" },
-              { symbol: "H", label: "统一入口" },
-            ].map((f) => (
-              <div key={f.label} className="feature-icon">
-                <div className="feature-icon-box font-mono text-sm font-bold text-ink">
-                  {f.symbol}
-                </div>
-                <span>{f.label}</span>
-              </div>
-            ))}
+          {/* Pipeline breadcrumb */}
+          <div className="pipeline">
+            {["想法", "Relay 接口", "Sandbox 执行", "Agent 编排", "交付沉淀"].map(
+              (node, i, arr) => (
+                <span key={node} className="contents">
+                  <span className={`pipeline-node ${i === 1 ? "current" : ""}`}>
+                    {node}
+                  </span>
+                  {i < arr.length - 1 && <span className="pipeline-arrow">→</span>}
+                </span>
+              )
+            )}
           </div>
         </div>
       </section>
 
       {/* ═══════════════════════════════════════════
-          WORKFLOW — 步骤条 + 截图
+          2. WHY — 标题 + 叙事段落 + 3 卡片（1 暗 2 亮）
       ═══════════════════════════════════════════ */}
-      <section id="workflow" className="py-20 lg:py-28 bg-surface/50">
+      <section className="py-20 lg:py-28 bg-surface/60">
+        <div className="max-w-5xl mx-auto px-6 lg:px-0">
+          <h2 className="headline text-3xl sm:text-4xl lg:text-5xl mb-10">
+            为什么选择 zmzai？
+          </h2>
+          <p className="narrative max-w-3xl mb-14">
+            zmzai.cloud 是把<b>模型接口、沙箱执行、Agent 编排</b>串成一条链路的
+            个人 AI 产品系统。当 AI 开发能力散落在各家 SaaS 里——各自注册、各自计费、
+            各自一套 API——zmzai 把它们收拢到同一个身份之下：
+            <b>一个账号</b>、<b>一套接口标准</b>、<b>一条可审计的任务流</b>。
+            你不需要再为每个环节换一次工具。
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+            <div className="why-card dark">
+              <div className="why-card-icon">
+                <IconGate />
+              </div>
+              <div className="text-lg font-bold">统一入口</div>
+              <p className="text-sm leading-relaxed opacity-70">
+                一个账号通行全部产品，不再为每个工具重复注册、记一堆 API Key。
+              </p>
+            </div>
+            <div className="why-card">
+              <div className="why-card-icon">
+                <IconPlug />
+              </div>
+              <div className="text-lg font-bold">接入而非重造</div>
+              <p className="text-sm leading-relaxed text-ink-2">
+                Relay 兼容 OpenAI 接口标准，换个 base_url 就用上多模型路由。
+              </p>
+            </div>
+            <div className="why-card">
+              <div className="why-card-icon">
+                <IconAudit />
+              </div>
+              <div className="text-lg font-bold">可审计可控</div>
+              <p className="text-sm leading-relaxed text-ink-2">
+                每个 Agent 任务持久化留痕，变更、审批、执行记录全程可查。
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════
+          3. WORKFLOW — 步骤条 + 带 badge 的视觉卡
+      ═══════════════════════════════════════════ */}
+      <section id="workflow" className="py-20 lg:py-28">
         <div className="max-w-5xl mx-auto px-6 lg:px-0">
           <div className="mb-16">
             <p className="font-mono text-xs tracking-[0.2em] text-muted uppercase mb-4">
               How it works
             </p>
-            <h2 className="headline text-3xl sm:text-4xl lg:text-5xl">
+            <h2 className="headline text-3xl sm:text-4xl lg:text-5xl mb-4">
               四步打通 AI 开发链路
             </h2>
+            <p className="text-lg text-ink-2 max-w-xl">
+              从想法到交付，每一步都有对应的产品承接。
+            </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
             {/* Left: step list */}
             <div className="flex flex-col">
-              {workflowSteps.map((step, i) => (
+              {workflowSteps.map((s, i) => (
                 <div
-                  key={step.num}
+                  key={s.num}
                   className={`step-item ${i === activeStep ? "active" : ""}`}
                   onClick={() => setActiveStep(i)}
                 >
-                  <span className="step-num">{step.num}</span>
+                  <span className="step-num">{s.num}</span>
                   <div>
-                    <div className="font-semibold">{step.title}</div>
+                    <div className="font-semibold">{s.title}</div>
                     <div className={`text-xs mt-0.5 ${i === activeStep ? "text-paper/70" : "text-muted"}`}>
-                      {step.desc}
+                      {s.desc}
                     </div>
                   </div>
                 </div>
               ))}
+
+              {/* Step 底部双按钮 */}
+              <div className="flex flex-wrap items-center gap-3 mt-8">
+                <a href="#products" className="btn-outline text-sm">
+                  浏览全部产品 <span className="arrow-slide">→</span>
+                </a>
+                <a
+                  href={`${AUTH_URL}/login?next=${encodeURIComponent(WORKSPACE_URL)}`}
+                  className="btn-solid text-sm"
+                >
+                  进入工作台
+                </a>
+              </div>
             </div>
 
-            {/* Right: showcase */}
+            {/* Right: showcase with step badge */}
             <div className="workflow-frame">
+              <span className="step-badge">{step.badge}</span>
               <div className="workflow-frame-inner">
-                <ProductShowcase productId={
-                  activeStep === 0 ? "hub" :
-                  activeStep === 1 ? "relay" :
-                  activeStep === 2 ? "sandbox" : "muzhi"
-                } />
+                <ProductShowcase productId={step.product} />
+                <div className="mt-4 flex items-start gap-2 border border-line bg-paper p-3">
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent mt-1.5 shrink-0" />
+                  <p className="text-xs leading-relaxed text-ink-2">{step.note}</p>
+                </div>
               </div>
             </div>
           </div>
@@ -219,9 +379,9 @@ export default function HomePage() {
       </section>
 
       {/* ═══════════════════════════════════════════
-          PRODUCTS — Tab 切换
+          4. PRODUCTS — Tab 切换 6 产品
       ═══════════════════════════════════════════ */}
-      <section id="products" className="py-20 lg:py-28">
+      <section id="products" className="py-20 lg:py-28 bg-surface/60">
         <div className="max-w-5xl mx-auto px-6 lg:px-0">
           <div className="mb-12">
             <p className="font-mono text-xs tracking-[0.2em] text-muted uppercase mb-4">
@@ -237,23 +397,22 @@ export default function HomePage() {
 
           {/* Tab bar */}
           <div className="flex flex-wrap gap-2 mb-10">
-            {productTabs.map((tab) => (
+            {allProducts.map((p) => (
               <button
-                key={tab.id}
-                className={`tab-pill ${activeTab === tab.id ? "active" : ""}`}
-                onClick={() => setActiveTab(tab.id)}
+                key={p.id}
+                className={`tab-pill ${activeTab === p.id ? "active" : ""}`}
+                onClick={() => setActiveTab(p.id)}
               >
-                {tab.name}
+                {p.name}
               </button>
             ))}
           </div>
 
           {/* Tab content */}
-          {productTabs.map((tab) => {
-            if (tab.id !== activeTab) return null;
-            const product = allProducts.find((p) => p.id === tab.id)!;
+          {allProducts.map((product) => {
+            if (product.id !== activeTab) return null;
             return (
-              <div key={tab.id} className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16 items-start">
+              <div key={product.id} className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16 items-start">
                 {/* Left: info */}
                 <div className="lg:col-span-3">
                   <div className="flex items-center gap-3 mb-4">
@@ -291,9 +450,40 @@ export default function HomePage() {
       </section>
 
       {/* ═══════════════════════════════════════════
-          PRODUCT CARDS GRID
+          5. INTEGRATIONS — 模型渠道 chip
       ═══════════════════════════════════════════ */}
-      <section className="py-20 lg:py-28 bg-surface/50">
+      <section className="py-20 lg:py-24">
+        <div className="max-w-5xl mx-auto px-6 lg:px-0">
+          <div className="mb-10">
+            <p className="font-mono text-xs tracking-[0.2em] text-muted uppercase mb-4">
+              Integrations
+            </p>
+            <h2 className="headline text-3xl sm:text-4xl mb-4">
+              一套接口，接所有模型
+            </h2>
+            <p className="text-lg text-ink-2 max-w-xl">
+              Relay 已对接主流模型渠道，兼容 OpenAI API 标准——换 base_url 与
+              API Key 即可完成迁移。
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            {integrations.map((name) => (
+              <span key={name} className="chip">
+                <span className="chip-dot" />
+                {name}
+              </span>
+            ))}
+            <a href="https://m.zmzai.cloud/docs" className="chip hover:border-accent">
+              查看全部渠道 <span className="arrow-slide">→</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════
+          6. PRODUCT CARDS GRID
+      ═══════════════════════════════════════════ */}
+      <section className="py-20 lg:py-28 bg-surface/60">
         <div className="max-w-5xl mx-auto px-6 lg:px-0">
           <div className="mb-12">
             <p className="font-mono text-xs tracking-[0.2em] text-muted uppercase mb-4">
@@ -329,19 +519,16 @@ export default function HomePage() {
       </section>
 
       {/* ═══════════════════════════════════════════
-          STATS
+          7. STATS — 计数动画
       ═══════════════════════════════════════════ */}
       <section className="py-20 lg:py-24">
         <div className="max-w-5xl mx-auto px-6 lg:px-0">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              { value: "6", label: "产品" },
-              { value: "1", label: "统一账号" },
-              { value: "∞", label: "模型选择" },
-              { value: "0", label: "厂商锁定" },
-            ].map((s) => (
+            {stats.map((s) => (
               <div key={s.label}>
-                <div className="stat-value">{s.value}</div>
+                <div className="stat-value">
+                  <AnimatedNumber value={s.value} suffix={s.suffix} />
+                </div>
                 <div className="text-sm text-muted mt-2">{s.label}</div>
               </div>
             ))}
@@ -350,9 +537,58 @@ export default function HomePage() {
       </section>
 
       {/* ═══════════════════════════════════════════
-          FAQ
-      ══════════════════════════════════════════ */}
-      <section id="faq" className="py-20 lg:py-28 bg-surface/50">
+          8. CTA CHECKLIST — 勾选清单 + 双按钮
+      ═══════════════════════════════════════════ */}
+      <section className="py-20 lg:py-28 bg-surface/60">
+        <div className="max-w-5xl mx-auto px-6 lg:px-0">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Left: headline */}
+            <div>
+              <p className="font-mono text-xs tracking-[0.2em] text-accent uppercase mb-4">
+                zmzai.cloud Workspace
+              </p>
+              <h2 className="headline text-3xl sm:text-4xl lg:text-5xl mb-6">
+                一个工作台，
+                <br />
+                让每个产品随手可用。
+              </h2>
+              <p className="text-base leading-relaxed text-ink-2 mb-8 max-w-md">
+                在统一工作台中管理接口、任务与内容，连接你已有的开发习惯，
+                不用为每个环节切换工具。
+              </p>
+              <div className="flex flex-wrap items-center gap-4">
+                <a
+                  href={`${AUTH_URL}/register`}
+                  className="btn-solid"
+                >
+                  免费注册 <span className="arrow-slide">→</span>
+                </a>
+                <a href="https://m.zmzai.cloud/docs" className="btn-outline">
+                  API 文档
+                </a>
+              </div>
+              <p className="font-mono text-[10px] text-muted mt-4">
+                支持 Web 端 · macOS / Windows / Linux 浏览器直访
+              </p>
+            </div>
+
+            {/* Right: checklist */}
+            <div className="border border-line bg-paper p-8">
+              {ctaChecks.map((item) => (
+                <div key={item} className="check-row">
+                  <span className="check-mark">✓</span>
+                  <span className="text-ink-2">{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════
+          9. FAQ
+      ═══════════════════════════════════════════ */}
+      <section id="faq" className="py-20 lg:py-28">
         <div className="max-w-3xl mx-auto px-6 lg:px-0">
           <div className="mb-12">
             <p className="font-mono text-xs tracking-[0.2em] text-muted uppercase mb-4">
@@ -372,12 +608,14 @@ export default function HomePage() {
       </section>
 
       {/* ═══════════════════════════════════════════
-          CTA
+          10. FINAL CTA — 大字收尾
       ═══════════════════════════════════════════ */}
       <section className="py-24 lg:py-32">
         <div className="max-w-3xl mx-auto px-6 lg:px-0 text-center">
-          <h2 className="headline text-3xl sm:text-4xl lg:text-5xl mb-6">
-            开始构建你的 AI 系统
+          <h2 className="headline text-4xl sm:text-5xl lg:text-6xl mb-6">
+            开始构建你的
+            <br />
+            <span className="text-accent">AI 产品系统。</span>
           </h2>
           <p className="text-lg text-ink-2 mb-10 max-w-md mx-auto">
             登录后可通过统一工作台访问所有产品。API 开发者可直接接入 Relay。
@@ -390,18 +628,14 @@ export default function HomePage() {
               登录工作台 <span className="arrow-slide">→</span>
             </a>
             <a
-              href="https://m.zmzai.cloud/docs"
+              href="/projects"
               className="btn-outline"
             >
-              API 文档
+              全部项目
             </a>
           </div>
         </div>
       </section>
-
-      {/* ═══════════════════════════════════════════
-          FOOTER
-      ═══════════════════════════════════════════ */}
     </main>
   );
 }
