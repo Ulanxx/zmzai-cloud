@@ -153,14 +153,16 @@ export default function HomePage() {
           {/* Feature icon row */}
           <div className="mt-20 flex flex-wrap gap-2">
             {[
-              { icon: "⚡", label: "模型路由" },
-              { icon: "🔒", label: "沙箱执行" },
-              { icon: "🤖", label: "Agent 编排" },
-              { icon: "📝", label: "知识沉淀" },
-              { icon: "🔗", label: "统一入口" },
+              { symbol: "M", label: "模型路由" },
+              { symbol: "S", label: "沙箱执行" },
+              { symbol: "A", label: "Agent 编排" },
+              { symbol: "W", label: "知识沉淀" },
+              { symbol: "H", label: "统一入口" },
             ].map((f) => (
               <div key={f.label} className="feature-icon">
-                <div className="feature-icon-box">{f.icon}</div>
+                <div className="feature-icon-box font-mono text-sm font-bold text-ink">
+                  {f.symbol}
+                </div>
                 <span>{f.label}</span>
               </div>
             ))}
