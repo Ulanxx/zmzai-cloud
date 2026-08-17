@@ -53,21 +53,23 @@ lookup() {
   return 1
 }
 
-# 重启 pm2 进程指向指定目录（delete+start，保证 cwd 生效）
+# 重启 pm2 进程指向指定目录（delete+start，保证 cwd 生效）。
+# 直接调 node 跑 next，不走 pnpm 包装层（曾出现 pnpm 包装进程挂起而 next 子进程消失）。
 pm2_start_release() { # $1=app $2=port $3=release_dir
   local app="$1" port="$2" dir="$3"
   if [ "$app" = "agent" ]; then
     run_runner "pm2 delete $app >/dev/null 2>&1 || true; PORT=$port pm2 start '$AGENT_NODE_BIN/node $dir/node_modules/next/dist/bin/next start -p $port' --name $app --cwd '$dir' >/dev/null 2>&1 && pm2 save >/dev/null"
   else
-    run_runner "pm2 delete $app >/dev/null 2>&1 || true; PORT=$port pm2 start 'pnpm start -p $port' --name $app --cwd '$dir' >/dev/null 2>&1 && pm2 save >/dev/null"
+    run_runner "pm2 delete $app >/dev/null 2>&1 || true; PORT=$port pm2 start 'node $dir/node_modules/next/dist/bin/next start -p $port' --name $app --cwd '$dir' >/dev/null 2>&1 && pm2 save >/dev/null"
   fi
 }
 
-# 健康检查：任何 HTTP 响应（含 4xx/5xx）都算存活，只有连不上才算失败
+# 健康检查：任何 HTTP 响应（含 4xx/5xx）都算存活，只有连不上才算失败。
+# 冷启动在 2 核小机上可能 15~30s，放宽到 8 次尝试（约 1 分钟内）。
 health_check() { # $1=port
   local port="$1" i code
-  for i in 1 2 3 4; do
-    code="$(curl -s -o /dev/null -w '%{http_code}' --max-time 6 "http://127.0.0.1:$port/" 2>/dev/null || true)"
+  for i in 1 2 3 4 5 6 7 8; do
+    code="$(curl -s -o /dev/null -w '%{http_code}' --max-time 4 "http://127.0.0.1:$port/" 2>/dev/null || true)"
     [ -n "$code" ] && [ "$code" != "000" ] && return 0
     sleep 3
   done
@@ -136,11 +138,14 @@ case "$cmd" in
     rel_dir="$app_dir/$sha-$ts"
     prev="$(readlink -f "$app_dir/current" 2>/dev/null || true)"
     mkdir -p "$app_dir" "$APPS/$app" "$ENVS/$app"
+    # 以 runner 身份执行安装/运行，目录必须归 runner 可写
+    chown -R runner:runner "$APPS/$app" "$app_dir" "$ENVS/$app"
 
     # 1. 解压产物
     rm -rf "$rel_dir" && mkdir -p "$rel_dir"
     tar -xzf "$tarball" -C "$rel_dir"
     [ -d "$rel_dir/.next" ] || fatal "包内缺少 .next（$rel_dir）"
+    chown -R runner:runner "$rel_dir"
 
     # 2. 环境变量：软链到 /opt/zmzai/envs 的权威副本（workos 无 env 文件则跳过）
     for envf in "$ENVS/$app"/.env*; do
