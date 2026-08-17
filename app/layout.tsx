@@ -21,10 +21,10 @@ const mono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "zmzai cloud · 牧之的 AI 产品系统",
-  description: "中转驿、沙箱场、Agent 工作台——各自独立运行，从同一个入口出发。",
+  description: "Relay、Sandbox、Agent、Muzhi——各自独立运行，从同一个入口出发。一个账号，打通 AI 开发全链路。",
   openGraph: {
     title: "zmzai cloud · 牧之的 AI 产品系统",
-    description: "中转驿、沙箱场、Agent 工作台——各自独立运行，从同一个入口出发。",
+    description: "Relay、Sandbox、Agent、Muzhi——各自独立运行，从同一个入口出发。一个账号，打通 AI 开发全链路。",
     type: "website",
   },
 };

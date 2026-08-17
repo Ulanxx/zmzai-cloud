@@ -1,9 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 
-import { Logo } from "@zmzai/theme";
 import { allProducts, statusLabel, type ProductLine } from "@/lib/projects";
 import { ProductShowcase } from "@/components/product-showcase";
 
@@ -120,29 +118,8 @@ export default function HomePage() {
       {/* ═══════════════════════════════════════════
           HERO
       ═══════════════════════════════════════════ */}
-      <section className="pt-28 pb-20 lg:pt-36 lg:pb-28">
+      <section className="pt-12 pb-16 lg:pt-20 lg:pb-20">
         <div className="max-w-5xl mx-auto px-6 lg:px-0">
-          {/* Top row: logo + nav */}
-          <div className="flex items-center justify-between mb-16">
-            <div className="flex items-center gap-3">
-              <Logo size={28} />
-              <span className="font-mono text-[11px] tracking-[0.15em] text-muted uppercase">
-                zmzai.cloud
-              </span>
-            </div>
-            <div className="hidden sm:flex items-center gap-8">
-              <a href="#products" className="text-sm text-muted hover:text-ink transition-colors">产品</a>
-              <a href="#workflow" className="text-sm text-muted hover:text-ink transition-colors">工作流</a>
-              <a href="#faq" className="text-sm text-muted hover:text-ink transition-colors">常见问题</a>
-              <a
-                href={`${AUTH_URL}/login?next=${encodeURIComponent(WORKSPACE_URL)}`}
-                className="text-sm font-medium text-ink hover:text-accent transition-colors"
-              >
-                登录
-              </a>
-            </div>
-          </div>
-
           {/* Hero text */}
           <div className="max-w-3xl">
             <p className="font-mono text-xs tracking-[0.2em] text-muted uppercase mb-6">
@@ -423,83 +400,6 @@ export default function HomePage() {
       {/* ═══════════════════════════════════════════
           FOOTER
       ═══════════════════════════════════════════ */}
-      <footer className="border-t border-line py-16">
-        <div className="max-w-5xl mx-auto px-6 lg:px-0">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
-            {/* Brand */}
-            <div className="col-span-2 lg:col-span-1">
-              <div className="flex items-center gap-2 mb-4">
-                <Logo size={24} />
-                <span className="font-mono text-xs tracking-[0.15em] text-muted uppercase">
-                  zmzai.cloud
-                </span>
-              </div>
-              <p className="text-sm text-muted leading-relaxed">
-                牧之的 AI 产品系统。
-                <br />
-                从模型到交付，一站打通。
-              </p>
-            </div>
-
-            {/* Products */}
-            <div>
-              <div className="font-mono text-[10px] tracking-[0.15em] text-muted uppercase mb-4">
-                产品
-              </div>
-              <ul className="flex flex-col gap-2.5">
-                {allProducts.map((p) => (
-                  <li key={p.id}>
-                    <a href={p.href} className="text-sm text-ink-2 hover:text-ink transition-colors">
-                      {p.name}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Resources */}
-            <div>
-              <div className="font-mono text-[10px] tracking-[0.15em] text-muted uppercase mb-4">
-                资源
-              </div>
-              <ul className="flex flex-col gap-2.5">
-                <li><a href="https://m.zmzai.cloud/docs" className="text-sm text-ink-2 hover:text-ink transition-colors">API 文档</a></li>
-                <li><a href="https://muzhi.zmzai.cloud" className="text-sm text-ink-2 hover:text-ink transition-colors">博客</a></li>
-                <li><a href="#faq" className="text-sm text-ink-2 hover:text-ink transition-colors">常见问题</a></li>
-              </ul>
-            </div>
-
-            {/* Account */}
-            <div>
-              <div className="font-mono text-[10px] tracking-[0.15em] text-muted uppercase mb-4">
-                账号
-              </div>
-              <ul className="flex flex-col gap-2.5">
-                <li>
-                  <a href={`${AUTH_URL}/login`} className="text-sm text-ink-2 hover:text-ink transition-colors">
-                    登录
-                  </a>
-                </li>
-                <li>
-                  <a href={`${AUTH_URL}/register`} className="text-sm text-ink-2 hover:text-ink transition-colors">
-                    注册
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-line pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <span className="font-mono text-[10px] text-muted">
-              © 2025 zmzai.cloud · 牧之
-            </span>
-            <div className="flex items-center gap-6">
-              <a href="#" className="text-xs text-muted hover:text-ink transition-colors">隐私</a>
-              <a href="#" className="text-xs text-muted hover:text-ink transition-colors">条款</a>
-            </div>
-          </div>
-        </div>
-      </footer>
     </main>
   );
 }
