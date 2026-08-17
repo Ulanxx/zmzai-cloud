@@ -18,8 +18,13 @@ function RelayApi() {
       <div className="showcase-titlebar">
         <span className="showcase-dot" />
         <span>POST /v1/chat/completions</span>
+        <span className="ml-auto font-mono text-[10px] text-success">200 OK</span>
       </div>
       <div className="showcase-code">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="font-mono text-[10px] px-1.5 py-0.5 bg-accent/10 text-accent rounded-sm">REQUEST</span>
+          <span className="font-mono text-[10px] text-muted">142ms · 156 tokens</span>
+        </div>
         <div className="text-muted">{"// Request"}</div>
         <div>
           <span className="text-accent">curl</span>{" "}
@@ -27,26 +32,35 @@ function RelayApi() {
         </div>
         <div className="pl-4 text-ink-2">{"-d '{"}</div>
         <div className="pl-8">
-          <span className="text-accent">"model"</span>:{" "}
+          <span className="text-accent">"model"</span>: {" "}
           <span className="text-success">"gpt-4o"</span>,
         </div>
         <div className="pl-8">
           <span className="text-accent">"messages"</span>: [{"{"}
         </div>
         <div className="pl-12">
-          <span className="text-accent">"role"</span>:{" "}
+          <span className="text-accent">"role"</span>: {" "}
           <span className="text-success">"user"</span>,
         </div>
         <div className="pl-12">
-          <span className="text-accent">"content"</span>:{" "}
+          <span className="text-accent">"content"</span>: {" "}
           <span className="text-success">"Hello"</span>
         </div>
         <div className="pl-8">{"}]"}</div>
         <div className="pl-4">{"}'"}</div>
-        <div className="mt-3 pt-3 border-t border-line text-muted">
-          <span className="text-success">✓</span> 200 OK ·{" "}
-          <span className="text-ink-2">142ms</span> ·{" "}
-          <span className="text-ink-2">156 tokens</span>
+        <div className="mt-3 pt-3 border-t border-line">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="font-mono text-[10px] px-1.5 py-0.5 bg-success/10 text-success rounded-sm">RESPONSE</span>
+          </div>
+          <div className="pl-4">
+            <span className="text-accent">"id"</span>: <span className="text-ink-2">"chatcmpl-abc123"</span>,
+          </div>
+          <div className="pl-4">
+            <span className="text-accent">"object"</span>: <span className="text-success">"chat.completion"</span>,
+          </div>
+          <div className="pl-4">
+            <span className="text-accent">"usage"</span>: {"{"} <span className="text-ink-2">total_tokens: 156</span> {"}"}
+          </div>
         </div>
       </div>
     </div>
@@ -62,8 +76,13 @@ function SandboxTerminal() {
         <span className="showcase-dot" />
         <span className="showcase-dot" />
         <span className="ml-2">sandbox — z.zmzai.cloud</span>
+        <span className="ml-auto font-mono text-[10px] text-success">● running</span>
       </div>
       <div className="showcase-code bg-dark-bg text-dark-ink">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="font-mono text-[10px] px-1.5 py-0.5 bg-success/20 text-success rounded-sm">CONTAINER</span>
+          <span className="font-mono text-[10px] text-dark-ink/50">ubuntu-22.04 · 256MB</span>
+        </div>
         <div>
           <span className="text-success">$</span>{" "}
           <span className="text-dark-ink/80">python3 solution.py</span>
@@ -77,6 +96,13 @@ function SandboxTerminal() {
         <div className="mt-2 text-success">✓ Exit code: 0</div>
         <div className="text-dark-ink/70">Output:</div>
         <div className="text-dark-ink/70 pl-2">Hello, World!</div>
+        <div className="mt-3 pt-2 border-t border-line/30">
+          <div className="flex items-center gap-3 text-dark-ink/50 text-[10px]">
+            <span>CPU: 12ms</span>
+            <span>MEM: 48MB</span>
+            <span>NET: blocked</span>
+          </div>
+        </div>
         <div className="mt-2 text-dark-ink/40">
           <span className="text-success">$</span>{" "}
           <span className="showcase-cursor" />
@@ -89,39 +115,52 @@ function SandboxTerminal() {
 /* ── Agent — 任务流节点 ── */
 function AgentFlow() {
   return (
-    <div className="flex flex-col gap-3">
-      {[
-        { label: "Analyze", status: "done", color: "text-success" },
-        { label: "Plan", status: "done", color: "text-success" },
-        { label: "Execute", status: "active", color: "text-accent" },
-        { label: "Review", status: "pending", color: "text-muted" },
-      ].map((step, i) => (
-        <div key={step.label} className="flex items-center gap-3">
-          <div
-            className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-mono border ${
-              step.status === "done"
-                ? "border-success text-success"
-                : step.status === "active"
-                  ? "border-accent text-accent bg-accent/10"
-                  : "border-line text-muted"
-            }`}
-          >
-            {step.status === "done" ? "✓" : i + 1}
+    <div className="showcase-shell">
+      <div className="showcase-titlebar">
+        <span className="showcase-dot" />
+        <span>Task Pipeline</span>
+        <span className="ml-auto font-mono text-[10px] text-accent">● executing</span>
+      </div>
+      <div className="p-5 flex flex-col gap-3">
+        {[
+          { label: "Analyze", status: "done", detail: "3 files scanned" },
+          { label: "Plan", status: "done", detail: "5 steps generated" },
+          { label: "Execute", status: "active", detail: "Running step 3/5" },
+          { label: "Review", status: "pending", detail: "Waiting" },
+        ].map((step, i) => (
+          <div key={step.label} className="flex items-center gap-3">
+            <div
+              className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-mono border shrink-0 ${
+                step.status === "done"
+                  ? "border-success text-success bg-success/5"
+                  : step.status === "active"
+                    ? "border-accent text-accent bg-accent/10"
+                    : "border-line text-muted"
+              }`}
+            >
+              {step.status === "done" ? "✓" : i + 1}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className={`font-mono text-xs ${
+                step.status === "done" ? "text-success" :
+                step.status === "active" ? "text-accent" : "text-muted"
+              }`}>
+                {step.label}
+              </div>
+              <div className="font-mono text-[10px] text-muted truncate">
+                {step.detail}
+              </div>
+            </div>
+            {step.status === "active" && (
+              <span className="flex gap-1 shrink-0">
+                <span className="w-1 h-1 rounded-full bg-accent animate-pulse" />
+                <span className="w-1 h-1 rounded-full bg-accent animate-pulse" style={{ animationDelay: "200ms" }} />
+                <span className="w-1 h-1 rounded-full bg-accent animate-pulse" style={{ animationDelay: "400ms" }} />
+              </span>
+            )}
           </div>
-          <span
-            className={`font-mono text-xs ${step.color}`}
-          >
-            {step.label}
-          </span>
-          {step.status === "active" && (
-            <span className="ml-auto flex gap-1">
-              <span className="w-1 h-1 rounded-full bg-accent animate-pulse" />
-              <span className="w-1 h-1 rounded-full bg-accent animate-pulse" style={{ animationDelay: "200ms" }} />
-              <span className="w-1 h-1 rounded-full bg-accent animate-pulse" style={{ animationDelay: "400ms" }} />
-            </span>
-          )}
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }
@@ -129,26 +168,41 @@ function AgentFlow() {
 /* ── Muzhi — 博客卡片 ── */
 function MuzhiBlog() {
   return (
-    <div className="showcase-blog-card">
-      <div className="h-40 bg-surface-strong flex items-center justify-center">
-        <span className="font-serif text-5xl text-muted/30">牧</span>
+    <div className="showcase-shell">
+      <div className="showcase-titlebar">
+        <span className="showcase-dot" />
+        <span>muzhi.zmzai.cloud</span>
+        <span className="ml-auto font-mono text-[10px] text-success">published</span>
       </div>
       <div className="p-5">
-        <div className="flex items-center gap-2 mb-3">
-          <span className="font-mono text-[10px] text-muted">2026-08-15</span>
-          <span className="font-mono text-[10px] px-1.5 py-0.5 bg-surface text-muted">
-            教程
-          </span>
-        </div>
-        <h4 className="text-base font-semibold mb-2 leading-snug">
-          从零构建 AI Coding Agent
-        </h4>
-        <p className="text-xs text-muted leading-relaxed">
-          第八期：工具调用与自治循环...
-        </p>
-        <div className="mt-4 pt-3 border-t border-line flex items-center justify-between">
-          <span className="font-mono text-[10px] text-success">已发布</span>
-          <span className="font-mono text-[10px] text-muted">12 min read</span>
+        {/* 文章列表 */}
+        <div className="flex flex-col gap-3">
+          {[
+            { title: "从零构建 AI Coding Agent", tag: "教程", date: "08-15", status: "live" },
+            { title: "Relay 计费断点设计", tag: "技术", date: "08-12", status: "live" },
+            { title: "Sandbox 安全隔离方案", tag: "技术", date: "08-08", status: "draft" },
+          ].map((post) => (
+            <div key={post.title} className="flex items-start gap-3 pb-3 border-b border-line last:border-0 last:pb-0">
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-semibold text-ink leading-snug truncate">
+                  {post.title}
+                </div>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="font-mono text-[10px] px-1 py-0.5 bg-surface text-muted rounded-sm">
+                    {post.tag}
+                  </span>
+                  <span className="font-mono text-[10px] text-muted">
+                    {post.date}
+                  </span>
+                </div>
+              </div>
+              <span className={`font-mono text-[10px] shrink-0 mt-0.5 ${
+                post.status === "live" ? "text-success" : "text-muted"
+              }`}>
+                {post.status === "live" ? "已发布" : "草稿"}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
     </div>

@@ -259,7 +259,7 @@ function ProductSection({
   return (
     <div
       ref={ref}
-      className={`section-accent reveal ${isVisible ? "visible" : ""}`}
+      className={`reveal ${isVisible ? "visible" : ""}`}
     >
       {/* 区块间分割线 */}
       {i > 0 && (
