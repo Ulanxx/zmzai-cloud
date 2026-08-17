@@ -1,95 +1,27 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
-import { allProducts, statusLabel, type ProductLine } from "@/lib/projects";
+import {
+  CheckList,
+  Chip,
+  CountUp,
+  FaqAccordion,
+  LandingButton,
+  PillTabs,
+  Pipeline,
+  StatusBadge,
+  StepList,
+  WhyCard,
+  WorkflowFrame,
+} from "@zmzai/theme";
+
+import { allProducts, statusLabel } from "@/lib/projects";
 import { ProductShowcase } from "@/components/product-showcase";
 
 const AUTH_URL = process.env.NEXT_PUBLIC_AUTH_URL ?? "https://auth.zmzai.cloud";
 const WORKSPACE_URL = "https://zmzai.cloud/workspace";
-
-/* ── Status badge ── */
-function StatusBadge({ status }: { status: ProductLine["status"] }) {
-  if (status === "live") {
-    return (
-      <span className="inline-flex items-center gap-1.5 font-mono text-[10px] tracking-widest uppercase text-success">
-        <span className="relative flex size-1.5">
-          <span className="status-pulse absolute inset-0 rounded-full bg-success" />
-          <span className="relative size-1.5 rounded-full bg-success" />
-        </span>
-        {statusLabel(status)}
-      </span>
-    );
-  }
-  if (status === "building") {
-    return (
-      <span className="inline-flex items-center gap-1.5 font-mono text-[10px] tracking-widest uppercase text-accent">
-        <span className="status-progress w-6 h-1 bg-accent/20 text-accent" />
-        {statusLabel(status)}
-      </span>
-    );
-  }
-  return (
-    <span className="inline-flex items-center gap-1.5 font-mono text-[10px] tracking-widest uppercase text-muted">
-      <span className="status-dashed size-2.5" />
-      {statusLabel(status)}
-    </span>
-  );
-}
-
-/* ── FAQ item ── */
-function FaqItem({ q, a }: { q: string; a: string }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className={`faq-item ${open ? "open" : ""}`}>
-      <button className="faq-question" onClick={() => setOpen(!open)}>
-        {q}
-        <span className="faq-icon">+</span>
-      </button>
-      <div className="faq-answer">
-        <p className="text-sm leading-relaxed text-ink-2">{a}</p>
-      </div>
-    </div>
-  );
-}
-
-/* ── AnimatedNumber — 进入视口后从 0 计数 ── */
-function AnimatedNumber({ value, suffix = "" }: { value: number; suffix?: string }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const [display, setDisplay] = useState(0);
-  const started = useRef(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !started.current) {
-          started.current = true;
-          const start = performance.now();
-          const dur = 1200;
-          const tick = (now: number) => {
-            const t = Math.min((now - start) / dur, 1);
-            const eased = 1 - Math.pow(1 - t, 3);
-            setDisplay(Math.round(eased * value));
-            if (t < 1) requestAnimationFrame(tick);
-          };
-          requestAnimationFrame(tick);
-        }
-      },
-      { threshold: 0.5 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [value]);
-
-  return (
-    <span ref={ref} className="count-num">
-      {display}
-      {suffix}
-    </span>
-  );
-}
+const LOGIN_URL = `${AUTH_URL}/login?next=${encodeURIComponent(WORKSPACE_URL)}`;
 
 /* ── 内联 SVG 图标（不用 emoji） ── */
 function IconGate() {
@@ -236,32 +168,20 @@ export default function HomePage() {
 
             {/* Dual CTA */}
             <div className="flex flex-wrap items-center gap-4 mb-14">
-              <a
-                href={`${AUTH_URL}/login?next=${encodeURIComponent(WORKSPACE_URL)}`}
-                className="btn-solid"
-              >
+              <LandingButton href={LOGIN_URL} arrow>
                 开始使用
-                <span className="arrow-slide">→</span>
-              </a>
-              <a href="#products" className="btn-outline">
+              </LandingButton>
+              <LandingButton href="#products" variant="outline">
                 浏览产品
-              </a>
+              </LandingButton>
             </div>
           </div>
 
           {/* Pipeline breadcrumb */}
-          <div className="pipeline">
-            {["想法", "Relay 接口", "Sandbox 执行", "Agent 编排", "交付沉淀"].map(
-              (node, i, arr) => (
-                <span key={node} className="contents">
-                  <span className={`pipeline-node ${i === 1 ? "current" : ""}`}>
-                    {node}
-                  </span>
-                  {i < arr.length - 1 && <span className="pipeline-arrow">→</span>}
-                </span>
-              )
-            )}
-          </div>
+          <Pipeline
+            items={["想法", "Relay 接口", "Sandbox 执行", "Agent 编排", "交付沉淀"]}
+            current={1}
+          />
         </div>
       </section>
 
@@ -282,33 +202,21 @@ export default function HomePage() {
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-            <div className="why-card dark">
-              <div className="why-card-icon">
-                <IconGate />
-              </div>
-              <div className="text-lg font-bold">统一入口</div>
+            <WhyCard dark icon={<IconGate />} title="统一入口">
               <p className="text-sm leading-relaxed opacity-70">
                 一个账号通行全部产品，不再为每个工具重复注册、记一堆 API Key。
               </p>
-            </div>
-            <div className="why-card">
-              <div className="why-card-icon">
-                <IconPlug />
-              </div>
-              <div className="text-lg font-bold">接入而非重造</div>
+            </WhyCard>
+            <WhyCard icon={<IconPlug />} title="接入而非重造">
               <p className="text-sm leading-relaxed text-ink-2">
                 Relay 兼容 OpenAI 接口标准，换个 base_url 就用上多模型路由。
               </p>
-            </div>
-            <div className="why-card">
-              <div className="why-card-icon">
-                <IconAudit />
-              </div>
-              <div className="text-lg font-bold">可审计可控</div>
+            </WhyCard>
+            <WhyCard icon={<IconAudit />} title="可审计可控">
               <p className="text-sm leading-relaxed text-ink-2">
                 每个 Agent 任务持久化留痕，变更、审批、执行记录全程可查。
               </p>
-            </div>
+            </WhyCard>
           </div>
         </div>
       </section>
@@ -332,48 +240,32 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
             {/* Left: step list */}
-            <div className="flex flex-col">
-              {workflowSteps.map((s, i) => (
-                <div
-                  key={s.num}
-                  className={`step-item ${i === activeStep ? "active" : ""}`}
-                  onClick={() => setActiveStep(i)}
-                >
-                  <span className="step-num">{s.num}</span>
-                  <div>
-                    <div className="font-semibold">{s.title}</div>
-                    <div className={`text-xs mt-0.5 ${i === activeStep ? "text-paper/70" : "text-muted"}`}>
-                      {s.desc}
-                    </div>
-                  </div>
-                </div>
-              ))}
+            <div>
+              <StepList
+                steps={workflowSteps}
+                active={activeStep}
+                onSelect={setActiveStep}
+              />
 
               {/* Step 底部双按钮 */}
               <div className="flex flex-wrap items-center gap-3 mt-8">
-                <a href="#products" className="btn-outline text-sm">
-                  浏览全部产品 <span className="arrow-slide">→</span>
-                </a>
-                <a
-                  href={`${AUTH_URL}/login?next=${encodeURIComponent(WORKSPACE_URL)}`}
-                  className="btn-solid text-sm"
-                >
+                <LandingButton href="#products" variant="outline" arrow className="text-sm">
+                  浏览全部产品
+                </LandingButton>
+                <LandingButton href={LOGIN_URL} className="text-sm">
                   进入工作台
-                </a>
+                </LandingButton>
               </div>
             </div>
 
             {/* Right: showcase with step badge */}
-            <div className="workflow-frame">
-              <span className="step-badge">{step.badge}</span>
-              <div className="workflow-frame-inner">
-                <ProductShowcase productId={step.product} />
-                <div className="mt-4 flex items-start gap-2 border border-line bg-paper p-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-accent mt-1.5 shrink-0" />
-                  <p className="text-xs leading-relaxed text-ink-2">{step.note}</p>
-                </div>
+            <WorkflowFrame badge={step.badge}>
+              <ProductShowcase productId={step.product} />
+              <div className="mt-4 flex items-start gap-2 border border-line bg-paper p-3">
+                <span className="w-1.5 h-1.5 rounded-full bg-accent mt-1.5 shrink-0" />
+                <p className="text-xs leading-relaxed text-ink-2">{step.note}</p>
               </div>
-            </div>
+            </WorkflowFrame>
           </div>
         </div>
       </section>
@@ -396,17 +288,12 @@ export default function HomePage() {
           </div>
 
           {/* Tab bar */}
-          <div className="flex flex-wrap gap-2 mb-10">
-            {allProducts.map((p) => (
-              <button
-                key={p.id}
-                className={`tab-pill ${activeTab === p.id ? "active" : ""}`}
-                onClick={() => setActiveTab(p.id)}
-              >
-                {p.name}
-              </button>
-            ))}
-          </div>
+          <PillTabs
+            items={allProducts.map((p) => ({ value: p.id, label: p.name }))}
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="mb-10"
+          />
 
           {/* Tab content */}
           {allProducts.map((product) => {
@@ -416,7 +303,7 @@ export default function HomePage() {
                 {/* Left: info */}
                 <div className="lg:col-span-3">
                   <div className="flex items-center gap-3 mb-4">
-                    <StatusBadge status={product.status} />
+                    <StatusBadge status={product.status} label={statusLabel(product.status)} />
                     <span className="font-mono text-[10px] text-muted">
                       {product.href.replace(/^https?:\/\//, "")}
                     </span>
@@ -430,18 +317,16 @@ export default function HomePage() {
                   <p className="text-sm leading-7 text-ink-2/80 mb-8 max-w-lg">
                     {product.description}
                   </p>
-                  <a href={product.href} className="btn-solid text-sm">
-                    进入产品 <span className="arrow-slide">→</span>
-                  </a>
+                  <LandingButton href={product.href} arrow className="text-sm">
+                    进入产品
+                  </LandingButton>
                 </div>
 
                 {/* Right: showcase */}
                 <div className="lg:col-span-2">
-                  <div className="workflow-frame">
-                    <div className="workflow-frame-inner">
-                      <ProductShowcase productId={product.id} />
-                    </div>
-                  </div>
+                  <WorkflowFrame>
+                    <ProductShowcase productId={product.id} />
+                  </WorkflowFrame>
                 </div>
               </div>
             );
@@ -468,14 +353,11 @@ export default function HomePage() {
           </div>
           <div className="flex flex-wrap gap-3">
             {integrations.map((name) => (
-              <span key={name} className="chip">
-                <span className="chip-dot" />
-                {name}
-              </span>
+              <Chip key={name}>{name}</Chip>
             ))}
-            <a href="https://m.zmzai.cloud/docs" className="chip hover:border-accent">
+            <Chip dot={false} href="https://m.zmzai.cloud/docs">
               查看全部渠道 <span className="arrow-slide">→</span>
-            </a>
+            </Chip>
           </div>
         </div>
       </section>
@@ -502,7 +384,7 @@ export default function HomePage() {
                 className="product-card p-6 block"
               >
                 <div className="flex items-center justify-between mb-4">
-                  <StatusBadge status={p.status} />
+                  <StatusBadge status={p.status} label={statusLabel(p.status)} />
                   <span className="font-mono text-[10px] text-muted">
                     {p.letter}
                   </span>
@@ -527,7 +409,7 @@ export default function HomePage() {
             {stats.map((s) => (
               <div key={s.label}>
                 <div className="stat-value">
-                  <AnimatedNumber value={s.value} suffix={s.suffix} />
+                  <CountUp value={s.value} suffix={s.suffix} />
                 </div>
                 <div className="text-sm text-muted mt-2">{s.label}</div>
               </div>
@@ -557,15 +439,12 @@ export default function HomePage() {
                 不用为每个环节切换工具。
               </p>
               <div className="flex flex-wrap items-center gap-4">
-                <a
-                  href={`${AUTH_URL}/register`}
-                  className="btn-solid"
-                >
-                  免费注册 <span className="arrow-slide">→</span>
-                </a>
-                <a href="https://m.zmzai.cloud/docs" className="btn-outline">
+                <LandingButton href={`${AUTH_URL}/register`} arrow>
+                  免费注册
+                </LandingButton>
+                <LandingButton href="https://m.zmzai.cloud/docs" variant="outline">
                   API 文档
-                </a>
+                </LandingButton>
               </div>
               <p className="font-mono text-[10px] text-muted mt-4">
                 支持 Web 端 · macOS / Windows / Linux 浏览器直访
@@ -573,14 +452,7 @@ export default function HomePage() {
             </div>
 
             {/* Right: checklist */}
-            <div className="border border-line bg-paper p-8">
-              {ctaChecks.map((item) => (
-                <div key={item} className="check-row">
-                  <span className="check-mark">✓</span>
-                  <span className="text-ink-2">{item}</span>
-                </div>
-              ))}
-            </div>
+            <CheckList items={ctaChecks} />
           </div>
         </div>
       </section>
@@ -599,11 +471,7 @@ export default function HomePage() {
             </h2>
           </div>
 
-          <div>
-            {faqs.map((faq) => (
-              <FaqItem key={faq.q} q={faq.q} a={faq.a} />
-            ))}
-          </div>
+          <FaqAccordion items={faqs} />
         </div>
       </section>
 
@@ -621,18 +489,12 @@ export default function HomePage() {
             登录后可通过统一工作台访问所有产品。API 开发者可直接接入 Relay。
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">
-            <a
-              href={`${AUTH_URL}/login?next=${encodeURIComponent(WORKSPACE_URL)}`}
-              className="btn-solid"
-            >
-              登录工作台 <span className="arrow-slide">→</span>
-            </a>
-            <a
-              href="/projects"
-              className="btn-outline"
-            >
+            <LandingButton href={LOGIN_URL} arrow>
+              登录工作台
+            </LandingButton>
+            <LandingButton href="/projects" variant="outline">
               全部项目
-            </a>
+            </LandingButton>
           </div>
         </div>
       </section>
