@@ -550,95 +550,218 @@
     }
   }
 
-  /* ── Slideshow — full-screen product slides ── */
-  .slide-container {
-    position: relative;
-    width: 100%;
-    height: 100dvh;
-    overflow: hidden;
-  }
+  /* ── open-design style components ── */
 
-  .slide {
-    position: absolute;
-    inset: 0;
-    display: flex;
+  /* Tab pills */
+  .tab-pill {
+    display: inline-flex;
     align-items: center;
-    opacity: 0;
-    transform: translateX(60px);
-    transition: opacity 600ms var(--ease-out-expo),
-                transform 600ms var(--ease-out-expo);
-    pointer-events: none;
-  }
-
-  .slide.active {
-    opacity: 1;
-    transform: translateX(0);
-    pointer-events: auto;
-  }
-
-  .slide.exit-left {
-    opacity: 0;
-    transform: translateX(-60px);
-  }
-
-  /* ── Slide nav dots ── */
-  .slide-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--color-line);
-    transition: all 300ms var(--ease-out);
-    cursor: pointer;
-  }
-
-  .slide-dot.active {
-    background: var(--color-accent);
-    width: 20px;
-    border-radius: 3px;
-  }
-
-  .slide-dot:hover {
-    background: var(--color-muted);
-  }
-
-  /* ── Slide arrow buttons ── */
-  .slide-arrow {
-    position: fixed;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 40;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.8125rem;
+    font-weight: 500;
     border: 1px solid var(--color-line);
     background: var(--color-paper);
     color: var(--color-muted);
     cursor: pointer;
     transition: all 200ms var(--ease-out);
-    opacity: 0;
   }
 
-  .slide-container:hover .slide-arrow {
-    opacity: 1;
+  .tab-pill:hover {
+    border-color: var(--color-muted);
+    color: var(--color-ink);
   }
 
-  .slide-arrow:hover {
-    border-color: var(--color-accent);
+  .tab-pill.active {
+    background: var(--color-ink);
+    color: var(--color-paper);
+    border-color: var(--color-ink);
+  }
+
+  /* Step sidebar */
+  .step-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.875rem;
+    color: var(--color-muted);
+    cursor: pointer;
+    transition: all 200ms var(--ease-out);
+    margin-bottom: 0.25rem;
+  }
+
+  .step-item:hover {
+    color: var(--color-ink);
+    background: var(--color-surface);
+  }
+
+  .step-item.active {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  .step-num {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    width: 1.5rem;
+    text-align: center;
+  }
+
+  /* Product card */
+  .product-card {
+    border: 1px solid var(--color-line);
+    background: var(--color-paper);
+    transition: transform 300ms var(--ease-out-expo),
+                box-shadow 300ms var(--ease-out-expo),
+                border-color 300ms var(--ease-out);
+  }
+
+  .product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px -12px oklch(0.18 0.011 40 / 0.12);
+    border-color: var(--color-muted);
+  }
+
+  /* Stat block */
+  .stat-value {
+    font-family: var(--font-serif);
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  /* FAQ accordion */
+  .faq-item {
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .faq-question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 1.25rem 0;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: var(--color-ink);
+    transition: color 200ms var(--ease-out);
+  }
+
+  .faq-question:hover {
     color: var(--color-accent);
   }
 
-  .slide-arrow-left {
-    left: 1.5rem;
+  .faq-icon {
+    font-size: 1.25rem;
+    transition: transform 300ms var(--ease-out);
+    color: var(--color-muted);
   }
 
-  .slide-arrow-right {
-    right: 1.5rem;
+  .faq-item.open .faq-icon {
+    transform: rotate(45deg);
   }
 
-  .slide-arrow:disabled {
-    opacity: 0 !important;
-    cursor: default;
+  .faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 400ms var(--ease-out-expo),
+                padding 400ms var(--ease-out-expo);
+  }
+
+  .faq-item.open .faq-answer {
+    max-height: 200px;
+    padding-bottom: 1.25rem;
+  }
+
+  /* Feature icon row */
+  .feature-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    font-size: 0.75rem;
+    color: var(--color-muted);
+  }
+
+  .feature-icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    transition: border-color 200ms var(--ease-out),
+                background 200ms var(--ease-out);
+  }
+
+  .feature-icon:hover .feature-icon-box {
+    border-color: var(--color-accent);
+    background: var(--color-surface);
+  }
+
+  /* Dual CTA buttons */
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border: 1.5px solid var(--color-ink);
+    border-radius: var(--radius-pill);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    background: transparent;
+    cursor: pointer;
+    transition: all 200ms var(--ease-out);
+  }
+
+  .btn-outline:hover {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  .btn-solid {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border: 1.5px solid var(--color-ink);
+    border-radius: var(--radius-pill);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-paper);
+    background: var(--color-ink);
+    cursor: pointer;
+    transition: all 200ms var(--ease-out);
+  }
+
+  .btn-solid:hover {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  /* Workflow screenshot frame */
+  .workflow-frame {
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: 0 24px 64px -16px oklch(0.18 0.011 40 / 0.12);
+  }
+
+  .workflow-frame-inner {
+    background: var(--color-surface);
+    padding: 1.5rem;
   }
 }
