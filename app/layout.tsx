@@ -20,11 +20,11 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "zmzai cloud · 牧之",
-  description: "牧之的云 — OPC 项目集合枢纽站",
+  title: "zmzai cloud · 牧之的 AI 产品系统",
+  description: "中转驿、沙箱场、Agent 工作台——各自独立运行，从同一个入口出发。",
   openGraph: {
-    title: "zmzai cloud · 牧之",
-    description: "牧之的云 — OPC 项目集合枢纽站",
+    title: "zmzai cloud · 牧之的 AI 产品系统",
+    description: "中转驿、沙箱场、Agent 工作台——各自独立运行，从同一个入口出发。",
     type: "website",
   },
 };
