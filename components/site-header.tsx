@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { Button, Navbar, navItemClass } from "@zmzai/theme";
+import { Button, Navbar } from "@zmzai/theme";
 
 const AUTH_URL = process.env.NEXT_PUBLIC_AUTH_URL ?? "https://auth.zmzai.cloud";
 const WORKSPACE_URL = "https://zmzai.cloud/workspace";
@@ -23,8 +23,24 @@ export function SiteHeader() {
         </Button>
       }
     >
-      <Link href="/projects" className={navItemClass(pathname.startsWith("/projects"))}>项目</Link>
-      <a href="https://github.com/Ulanxx" target="_blank" rel="noreferrer" className={navItemClass(false)}>GitHub</a>
+      <Link
+        href="/projects"
+        className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
+          pathname.startsWith("/projects")
+            ? "bg-ink text-paper"
+            : "text-ink-2 hover:bg-surface-2 hover:text-ink"
+        }`}
+      >
+        项目
+      </Link>
+      <a
+        href="https://github.com/Ulanxx"
+        target="_blank"
+        rel="noreferrer"
+        className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium text-ink-2 transition-colors hover:bg-surface-2 hover:text-ink"
+      >
+        GitHub
+      </a>
     </Navbar>
   );
 }

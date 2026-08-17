@@ -2,10 +2,10 @@ import { Logo } from "@zmzai/theme";
 
 export function SiteFooter() {
   return (
-    <footer className="rule-top mt-24 border-t-2 border-rule">
+    <footer className="border-t border-line mt-24">
       <div className="page-shell flex flex-col gap-8 py-12 sm:flex-row sm:items-end sm:justify-between">
         <div className="flex flex-col gap-3">
-          <Logo size={40} />
+          <Logo size={32} />
           <p className="font-mono text-xs text-muted">
             zmzai.cloud
             <br />

@@ -12,10 +12,10 @@ export default function ProjectsPage() {
       <header className="flex flex-col gap-4">
         <p className="eyebrow">z·m·z·a·i · 产品矩阵</p>
         <h1 className="headline text-4xl">牧之的云里的工程</h1>
-        <p className="max-w-2xl text-ink/80">
-          每个产品独立部署、独立仓库，共享同一套印章品牌底盘。「牧之」拼音拆成
+        <p className="max-w-2xl text-ink-2/80">
+          每个产品独立部署、独立仓库，共享同一套品牌底盘。「牧之」拼音拆成
           z·m·z·a·i 五个字母，每个字母挂一条 AI 产品线；muzhi 本体是博客与付费
-          知识体系。项目可换自己的项目级强调色，但字体与纸感不动——集合里每个
+          知识体系。项目可换自己的项目级强调色，但字体与排版风格不动——集合里每个
           可识别，又明显是一家人。
         </p>
       </header>
