@@ -747,8 +747,8 @@
   }
 
   .btn-solid:hover {
-    background: var(--color-accent);
-    border-color: var(--color-accent);
+    background: oklch(0.30 0.010 30);
+    border-color: oklch(0.30 0.010 30);
   }
 
   /* Workflow screenshot frame */
@@ -925,5 +925,30 @@
   /* Count-up number */
   .count-num {
     font-variant-numeric: tabular-nums;
+  }
+
+  /* ── Floating pill nav — full-width sticky, pill after scroll ── */
+  .nav-shell {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    transition: padding 300ms var(--ease-out);
+  }
+
+  .nav-shell .site-nav {
+    transition: border-radius 300ms var(--ease-out),
+                box-shadow 300ms var(--ease-out),
+                border-color 300ms var(--ease-out);
+  }
+
+  .nav-shell.floating {
+    padding: 10px 12px;
+  }
+
+  .nav-shell.floating .site-nav {
+    border-radius: var(--radius-pill);
+    border-color: transparent;
+    box-shadow: 0 8px 32px -8px oklch(0.15 0.010 30 / 0.18),
+                0 1px 3px oklch(0.15 0.010 30 / 0.06);
   }
 }
