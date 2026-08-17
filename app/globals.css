@@ -14,8 +14,8 @@
   --color-muted: #71717A;
   --color-line: #27272A;
   --color-rule: #3F3F46;
-  --color-accent: oklch(0.55 0.180 27);
-  --color-accent-strong: oklch(0.48 0.180 27);
+  --color-accent: oklch(0.60 0.200 27);
+  --color-accent-strong: oklch(0.52 0.200 27);
   --color-accent-ink: #FAFAFA;
   --color-success: oklch(0.62 0.120 160);
   --color-bg: #0A0A0A;
