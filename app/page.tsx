@@ -246,7 +246,7 @@ export default function HomePage() {
   );
 }
 
-/* ── 产品区块组件 — 带 showcase + 动画编号 ── */
+/* ── 产品区块组件 — 统一底色 + 装饰 + 大展示区 ── */
 function ProductSection({
   product: p,
   index: i,
@@ -259,28 +259,42 @@ function ProductSection({
   return (
     <div
       ref={ref}
-      className={`border-t border-line reveal ${isVisible ? "visible" : ""} ${
-        i % 2 === 0 ? "bg-surface" : "bg-paper"
-      }`}
+      className={`section-accent reveal ${isVisible ? "visible" : ""}`}
     >
-      <div className="max-w-5xl py-20 lg:py-28">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
-          {/* 左侧信息 */}
-          <div>
-            <div className="flex items-center gap-3 mb-6">
+      {/* 区块间分割线 */}
+      {i > 0 && (
+        <div className="max-w-5xl mx-auto px-6 lg:px-0">
+          <div className="section-divider">
+            <span className="section-divider-dot" />
+            <span className="section-divider-dot" />
+            <span className="section-divider-line" />
+          </div>
+        </div>
+      )}
+
+      <div className="max-w-5xl mx-auto px-6 lg:px-0 py-20 lg:py-28">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16 items-start">
+          {/* 左侧信息 — 占 3/5 */}
+          <div className="lg:col-span-3 relative">
+            {/* 水印编号 */}
+            <span className="section-watermark hidden lg:block">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+
+            <div className="flex items-center gap-3 mb-8">
               <span className="font-mono text-xs tracking-widest text-muted">
                 <AnimatedNumber target={i + 1} isVisible={isVisible} />
               </span>
               <StatusBadge status={p.status} />
             </div>
 
-            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight mb-4">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-5">
               {p.name}
             </h2>
-            <p className="text-lg leading-relaxed text-ink-2 mb-3">
+            <p className="text-lg sm:text-xl leading-relaxed text-ink-2 mb-4 font-medium">
               {p.tagline}
             </p>
-            <p className="text-sm leading-7 text-ink-2/80 max-w-2xl mb-8">
+            <p className="text-sm leading-7 text-ink-2/80 max-w-xl mb-10">
               {p.description}
             </p>
 
@@ -294,9 +308,11 @@ function ProductSection({
             </div>
           </div>
 
-          {/* 右侧视觉展示 */}
-          <div className="hidden lg:flex items-start justify-end">
-            <ProductShowcase productId={p.id} />
+          {/* 右侧视觉展示 — 占 2/5，更大更突出 */}
+          <div className="lg:col-span-2 flex items-start justify-center lg:sticky lg:top-24">
+            <div className="w-full max-w-md">
+              <ProductShowcase productId={p.id} />
+            </div>
           </div>
         </div>
       </div>

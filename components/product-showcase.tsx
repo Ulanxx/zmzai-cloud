@@ -129,24 +129,24 @@ function AgentFlow() {
 /* ── Muzhi — 博客卡片 ── */
 function MuzhiBlog() {
   return (
-    <div className="showcase-blog-card max-w-[280px]">
-      <div className="h-32 bg-surface-strong flex items-center justify-center">
-        <span className="font-serif text-4xl text-muted/30">牧</span>
+    <div className="showcase-blog-card">
+      <div className="h-40 bg-surface-strong flex items-center justify-center">
+        <span className="font-serif text-5xl text-muted/30">牧</span>
       </div>
-      <div className="p-4">
-        <div className="flex items-center gap-2 mb-2">
+      <div className="p-5">
+        <div className="flex items-center gap-2 mb-3">
           <span className="font-mono text-[10px] text-muted">2026-08-15</span>
           <span className="font-mono text-[10px] px-1.5 py-0.5 bg-surface text-muted">
             教程
           </span>
         </div>
-        <h4 className="text-sm font-semibold mb-1 leading-snug">
+        <h4 className="text-base font-semibold mb-2 leading-snug">
           从零构建 AI Coding Agent
         </h4>
         <p className="text-xs text-muted leading-relaxed">
           第八期：工具调用与自治循环...
         </p>
-        <div className="mt-3 pt-3 border-t border-line flex items-center justify-between">
+        <div className="mt-4 pt-3 border-t border-line flex items-center justify-between">
           <span className="font-mono text-[10px] text-success">已发布</span>
           <span className="font-mono text-[10px] text-muted">12 min read</span>
         </div>
@@ -158,38 +158,38 @@ function MuzhiBlog() {
 /* ── WorkOS — 仪表盘 widget ── */
 function WorkOsDash() {
   return (
-    <div className="showcase-shell max-w-[300px]">
+    <div className="showcase-shell">
       <div className="showcase-titlebar">
         <span className="showcase-dot" />
         <span>WorkOS Dashboard</span>
       </div>
-      <div className="p-4 flex flex-col gap-3">
+      <div className="p-5 flex flex-col gap-4">
         <div className="flex gap-3">
-          <div className="flex-1 p-3 border border-line">
+          <div className="flex-1 p-4 border border-line">
             <div className="font-mono text-[10px] text-muted mb-1">任务</div>
-            <div className="text-lg font-semibold">12</div>
+            <div className="text-xl font-semibold">12</div>
           </div>
-          <div className="flex-1 p-3 border border-line">
+          <div className="flex-1 p-4 border border-line">
             <div className="font-mono text-[10px] text-muted mb-1">项目</div>
-            <div className="text-lg font-semibold">4</div>
+            <div className="text-xl font-semibold">4</div>
           </div>
         </div>
-        <div className="p-3 border border-line">
+        <div className="p-4 border border-line">
           <div className="font-mono text-[10px] text-muted mb-2">今日进度</div>
-          <div className="h-2 bg-surface rounded-full overflow-hidden">
+          <div className="h-2.5 bg-surface rounded-full overflow-hidden">
             <div
               className="h-full bg-accent rounded-full"
               style={{ width: "68%" }}
             />
           </div>
-          <div className="font-mono text-[10px] text-muted mt-1">68%</div>
+          <div className="font-mono text-[10px] text-muted mt-1.5">68%</div>
         </div>
-        <div className="p-3 border border-line">
-          <div className="font-mono text-[10px] text-muted mb-2">最近活动</div>
+        <div className="p-4 border border-line">
+          <div className="font-mono text-[10px] text-muted mb-3">最近活动</div>
           {["完成文章发布", "更新 API 配置", "创建新项目"].map((item) => (
             <div
               key={item}
-              className="flex items-center gap-2 text-xs py-1 text-ink-2"
+              className="flex items-center gap-2 text-xs py-1.5 text-ink-2"
             >
               <span className="w-1 h-1 rounded-full bg-success shrink-0" />
               {item}
@@ -201,20 +201,20 @@ function WorkOsDash() {
   );
 }
 
-/* ── Hub — 产品地图 ── */
+/* ── Hub — 产品地图 ─ */
 function HubMap() {
   const items = [
-    { name: "Muzhi", x: 50, y: 15 },
-    { name: "Sandbox", x: 15, y: 45 },
-    { name: "Relay", x: 85, y: 45 },
-    { name: "Agent", x: 25, y: 80 },
-    { name: "WorkOS", x: 75, y: 80 },
+    { name: "Muzhi", x: 50, y: 12 },
+    { name: "Sandbox", x: 12, y: 42 },
+    { name: "Relay", x: 88, y: 42 },
+    { name: "Agent", x: 22, y: 82 },
+    { name: "WorkOS", x: 78, y: 82 },
   ];
   return (
-    <div className="relative w-full h-[200px]">
+    <div className="relative w-full h-[260px]">
       {/* 中心 Hub */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full border-2 border-accent flex items-center justify-center bg-paper z-10">
-        <span className="font-mono text-[10px] text-accent font-bold">Hub</span>
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-full border-2 border-accent flex items-center justify-center bg-paper z-10">
+        <span className="font-mono text-[11px] text-accent font-bold">Hub</span>
       </div>
       {/* 连接线 */}
       <svg
