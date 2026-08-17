@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { Seal } from "@/components/seal";
+import { Logo } from "@zmzai/theme";
 import { letterProducts, rootProduct, statusLabel } from "@/lib/projects";
 const AUTH_URL = process.env.NEXT_PUBLIC_AUTH_URL ?? "https://auth.zmzai.cloud";
 const WORKSPACE_URL = "https://zmzai.cloud/workspace";
@@ -44,7 +44,7 @@ export default function HomePage() {
 
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(18rem,0.8fr)] lg:items-end">
           <p className="max-w-2xl text-lg leading-9 text-ink/80"><span className="font-mono text-accent">zmzai</span> 是牧之正在搭建的一套 AI 产品系统。中转驿、知识体系、沙箱场、Agent 使与工作台，各自独立，又从同一个入口出发。</p>
-          <div className="flex flex-wrap items-center gap-5 font-mono text-sm"><Link href={`${AUTH_URL}/login?next=${encodeURIComponent(WORKSPACE_URL)}`} className="btn-primary">开始使用 →</Link><Link href="/projects" className="underline decoration-line underline-offset-4 transition-colors hover:text-accent">查看产品矩阵</Link></div>
+          <div className="flex flex-wrap items-center gap-5 font-mono text-sm"><Link href={`${AUTH_URL}/login?next=${encodeURIComponent(WORKSPACE_URL)}`} className="inline-flex items-center rounded-sm bg-accent px-5 py-2.5 text-sm font-medium text-accent-ink transition-colors hover:bg-accent-strong">开始使用 →</Link><Link href="/projects" className="underline decoration-line underline-offset-4 transition-colors hover:text-accent">查看产品矩阵</Link></div>
         </div>
       </section>
 
@@ -94,7 +94,7 @@ export default function HomePage() {
 
       {/* 本体：muzhi 知识体系 — 第一个落地成员，单独突出 */}
       <section className="rule-top flex flex-col gap-8 pt-14 sm:flex-row sm:items-start sm:gap-14">
-        <Seal size={64} className="shrink-0" />
+        <Logo size={64} />
         <div className="flex flex-col gap-5">
           <div className="flex flex-col gap-2">
             <p className="eyebrow">第一个落地成员 · 本体</p>
@@ -104,7 +104,7 @@ export default function HomePage() {
             {rootProduct.description}
           </p>
           <div className="flex flex-wrap items-center gap-5">
-            <Link href={rootProduct.href} className="btn-primary">
+            <Link href={rootProduct.href} className="inline-flex items-center rounded-sm bg-accent px-5 py-2.5 text-sm font-medium text-accent-ink transition-colors hover:bg-accent-strong">
               进入知识体系 →
             </Link>
             <Link

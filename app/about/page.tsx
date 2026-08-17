@@ -1,4 +1,4 @@
-import { Seal } from "@/components/seal";
+import { Logo } from "@zmzai/theme";
 
 export const metadata = {
   title: "为什么 · zmzai cloud",
@@ -35,7 +35,7 @@ export default function AboutPage() {
       </div>
 
       <div className="rule-top mt-8 flex flex-col gap-6 pt-12 sm:flex-row sm:items-start sm:gap-12">
-        <Seal size={56} className="shrink-0" />
+        <Logo size={56} />
         <div className="flex flex-col gap-3 max-w-xl">
           <h2 className="headline text-2xl">三不</h2>
           <ul className="flex flex-col gap-2 font-mono text-sm text-ink/80">

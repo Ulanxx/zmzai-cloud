@@ -1,11 +1,11 @@
-import { Seal } from "@/components/seal";
+import { Logo } from "@zmzai/theme";
 
 export function SiteFooter() {
   return (
     <footer className="rule-top mt-24 border-t-2 border-rule">
       <div className="page-shell flex flex-col gap-8 py-12 sm:flex-row sm:items-end sm:justify-between">
         <div className="flex flex-col gap-3">
-          <Seal size={40} />
+          <Logo size={40} />
           <p className="font-mono text-xs text-muted">
             zmzai.cloud · 牧之 署名
             <br />
