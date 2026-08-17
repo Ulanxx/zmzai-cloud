@@ -18,6 +18,7 @@ export function SiteHeader() {
 
   return (
     <NavShell
+      brandHref="/"
       badge={
         <span className="rounded-full border border-line px-2 py-0.5 font-mono text-[11px] text-ink-3">
           zmzai.cloud
