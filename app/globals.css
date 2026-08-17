@@ -6,25 +6,25 @@
    seal-red accent. No Geist, no acid green, no centered AI slop. */
 
 @theme {
-  /* Color — dark theme tokens */
-  --color-paper: #0A0A0A;
-  --color-surface: #141414;
-  --color-surface-strong: #1C1C1C;
-  --color-ink: #FAFAFA;
-  --color-muted: #71717A;
-  --color-line: #27272A;
-  --color-rule: #3F3F46;
-  --color-accent: oklch(0.60 0.200 27);
-  --color-accent-strong: oklch(0.52 0.200 27);
-  --color-accent-ink: #FAFAFA;
-  --color-success: oklch(0.62 0.120 160);
-  --color-bg: #0A0A0A;
-  --color-ink-2: #A1A1AA;
-  --color-ink-3: #71717A;
-  --color-surface-2: #1C1C1C;
-  --color-line-strong: #52525B;
-  --color-danger: oklch(0.55 0.180 27);
-  --color-warning: oklch(0.70 0.12 80);
+  /* Color — warm paper theme tokens */
+  --color-paper: oklch(0.95 0.012 85);
+  --color-surface: oklch(0.97 0.008 85);
+  --color-surface-strong: oklch(0.92 0.014 80);
+  --color-ink: oklch(0.18 0.011 40);
+  --color-muted: oklch(0.47 0.013 55);
+  --color-line: oklch(0.86 0.012 80);
+  --color-rule: oklch(0.18 0.011 40);
+  --color-accent: oklch(0.46 0.150 27);
+  --color-accent-strong: oklch(0.39 0.150 27);
+  --color-accent-ink: oklch(0.97 0.008 85);
+  --color-success: oklch(0.52 0.090 160);
+  --color-bg: oklch(0.95 0.012 85);
+  --color-ink-2: oklch(0.47 0.013 55);
+  --color-ink-3: oklch(0.55 0.012 55);
+  --color-surface-2: oklch(0.92 0.014 80);
+  --color-line-strong: oklch(0.18 0.011 40);
+  --color-danger: oklch(0.42 0.155 27);
+  --color-warning: oklch(0.65 0.10 80);
   --color-dark-bg: #0A0A0A;
   --color-dark-surface: #141414;
   --color-dark-ink: #FAFAFA;
@@ -78,7 +78,7 @@
 
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 @layer base {
@@ -117,7 +117,7 @@
     outline-offset: 2px;
   }
 
-  /* Scrollbar — dark refinement */
+  /* Scrollbar — light theme */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--color-line); border-radius: 3px; }
@@ -224,17 +224,15 @@
     }
   }
 
-  /* Card hover — lift + glow */
+  /* Card hover — lift */
   .card-lift {
     transition: transform var(--animate-dur-base) var(--ease-out-expo),
-                box-shadow var(--animate-dur-base) var(--ease-out-expo),
-                border-color var(--animate-dur-base) var(--ease-out);
+                box-shadow var(--animate-dur-base) var(--ease-out-expo);
   }
 
   .card-lift:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.4),
-                0 0 0 1px var(--color-accent);
+    box-shadow: 0 12px 40px -12px oklch(0.18 0.011 40 / 0.15);
   }
 
   /* Arrow slide on hover */
