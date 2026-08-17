@@ -134,50 +134,33 @@ export default function HomePage() {
           key={p.id}
           className={`border-t border-line ${i % 2 === 0 ? "bg-surface" : "bg-paper"}`}
         >
-          <div className={`grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 py-20 lg:py-28 ${i % 2 === 1 ? "lg:direction-rtl" : ""}`}>
-            {/* 文字区 */}
-            <div className={`flex flex-col justify-center gap-6 ${i % 2 === 1 ? "lg:direction-ltr" : ""}`}>
-              <div className="flex items-center gap-3">
-                <span className="font-mono text-xs tracking-widest text-muted">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <div className="flex items-center gap-2">
-                  <span className={`size-2 rounded-full ${statusDot[p.status]}`} />
-                  <span className="font-mono text-[10px] tracking-widest text-muted uppercase">
-                    {statusLabel(p.status)}
-                  </span>
-                </div>
-              </div>
-
-              <h2 className="headline text-4xl sm:text-5xl">{p.name}</h2>
-              <p className="text-lg leading-relaxed text-ink-2">{p.tagline}</p>
-              <p className="text-sm leading-7 text-ink-2/80 max-w-lg">{p.description}</p>
-
-              <div className="flex items-center gap-6 pt-4">
-                <a
-                  href={p.href}
-                  className="btn-primary"
-                >
-                  进入产品 →
-                </a>
-                <span className="font-mono text-xs text-muted">
-                  {p.href.replace(/^https?:\/\//, "")}
+          <div className="max-w-3xl py-20 lg:py-28">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="font-mono text-xs tracking-widest text-muted">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <div className="flex items-center gap-2">
+                <span className={`size-2 rounded-full ${statusDot[p.status]}`} />
+                <span className="font-mono text-[10px] tracking-widest text-muted uppercase">
+                  {statusLabel(p.status)}
                 </span>
               </div>
             </div>
 
-            {/* 视觉区 — 字母/汉字大展示 */}
-            <div className={`flex items-center justify-center ${i % 2 === 1 ? "lg:direction-ltr" : ""}`}>
-              <div className="relative">
-                <div className="text-[200px] sm:text-[280px] font-bold leading-none text-rule select-none">
-                  {p.letter}
-                </div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center">
-                    <p className="font-serif text-2xl text-ink/20">{p.hanzi}</p>
-                  </div>
-                </div>
-              </div>
+            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight mb-4">{p.name}</h2>
+            <p className="text-lg leading-relaxed text-ink-2 mb-3">{p.tagline}</p>
+            <p className="text-sm leading-7 text-ink-2/80 max-w-2xl mb-8">{p.description}</p>
+
+            <div className="flex items-center gap-6">
+              <a
+                href={p.href}
+                className="btn-primary"
+              >
+                进入产品 →
+              </a>
+              <span className="font-mono text-xs text-muted">
+                {p.href.replace(/^https?:\/\//, "")}
+              </span>
             </div>
           </div>
         </RevealSection>
