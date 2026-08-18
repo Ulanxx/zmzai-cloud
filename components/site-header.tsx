@@ -13,7 +13,7 @@ const WORKSPACE_URL = "https://zmzai.cloud/workspace";
  * 顶部时全宽贴边，滚动 >16px 后收缩为浮动胶囊（圆角 + 阴影 + 四周留白）。
  * 滚动监听与形态切换由 theme NavShell 内部实现。
  */
-export function SiteHeader() {
+export function SiteHeader({ isAuthenticated = false }: { isAuthenticated?: boolean }) {
   const pathname = usePathname() ?? "/";
 
   return (
@@ -25,17 +25,29 @@ export function SiteHeader() {
         </span>
       }
       actions={
-        <Button
-          type="button"
-          className="bg-ink text-paper hover:bg-ink/85"
-          onClick={() => {
-            window.location.assign(
-              `${AUTH_URL}/login?next=${encodeURIComponent(WORKSPACE_URL)}`
-            );
-          }}
-        >
-          登录
-        </Button>
+        isAuthenticated ? (
+          <Button
+            type="button"
+            className="bg-ink text-paper hover:bg-ink/85"
+            onClick={() => {
+              window.location.assign(WORKSPACE_URL);
+            }}
+          >
+            进入工作台
+          </Button>
+        ) : (
+          <Button
+            type="button"
+            className="bg-ink text-paper hover:bg-ink/85"
+            onClick={() => {
+              window.location.assign(
+                `${AUTH_URL}/login?next=${encodeURIComponent(WORKSPACE_URL)}`
+              );
+            }}
+          >
+            登录
+          </Button>
+        )
       }
     >
       {[

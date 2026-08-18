@@ -4,6 +4,10 @@ import { Noto_Serif_SC, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { getCurrentUser } from "@/providers/auth/session";
+
+// 依赖 session cookie，必须每次动态渲染，避免缓存未登录状态的页面
+export const dynamic = "force-dynamic";
 
 const serif = Noto_Serif_SC({
   subsets: ["latin"],
@@ -33,15 +37,16 @@ export const viewport: Viewport = {
   themeColor: "#FFFFFF",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const user = await getCurrentUser();
   return (
     <html lang="zh-CN" className={`${serif.variable} ${mono.variable}`}>
       <body>
-        <SiteHeader />
+        <SiteHeader isAuthenticated={Boolean(user)} />
         <main className="page-shell py-16">{children}</main>
         <SiteFooter />
       </body>
