@@ -1,4 +1,4 @@
-# Design — zmzai cloud 牧之
+# Design — zmzai.cloud 牧之
 
 Locked design system. Future Hallmark runs read this file first; pages defer
 to it. Amend intentionally — the file is the rule.

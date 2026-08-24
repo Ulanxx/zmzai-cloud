@@ -1,4 +1,4 @@
-# zmzai cloud 运维脚本
+# zmzai.cloud 运维脚本
 
 整套体系的部署、数据库、迁移、备份脚本。所有应用跑在香港服务器，
 MongoDB 在本机（`127.0.0.1:27017`），CI/CD 用服务器 cron 定时拉取。
@@ -30,7 +30,7 @@ su - runner -c "bash /opt/zmzai/scripts/auto-deploy.sh"
 
 ## MongoDB 创建脚本
 
-中转驿启用余额预授权前，MongoDB 必须以单节点副本集运行。先在 `/etc/mongod.conf`
+Relay启用余额预授权前，MongoDB 必须以单节点副本集运行。先在 `/etc/mongod.conf`
 添加 `replication.replSetName: rs0` 并重启 MongoDB，再执行：
 
 ```bash

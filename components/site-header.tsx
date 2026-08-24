@@ -6,7 +6,11 @@ import { usePathname } from "next/navigation";
 import { Button, NavShell, navItemClass } from "@zmzai/theme";
 
 const AUTH_URL = process.env.NEXT_PUBLIC_AUTH_URL ?? "https://auth.zmzai.cloud";
-const WORKSPACE_URL = "https://zmzai.cloud/workspace";
+
+/** 工作台地址基于当前 origin，本地开发时不会误跳到生产环境 */
+function workspaceUrl(): string {
+  return `${window.location.origin}/workspace`;
+}
 
 /**
  * SiteHeader — open-design.ai 式吸顶导航（theme NavShell）：
@@ -30,7 +34,7 @@ export function SiteHeader({ isAuthenticated = false }: { isAuthenticated?: bool
             type="button"
             className="bg-ink text-paper hover:bg-ink/85"
             onClick={() => {
-              window.location.assign(WORKSPACE_URL);
+              window.location.assign(workspaceUrl());
             }}
           >
             进入工作台
@@ -41,7 +45,7 @@ export function SiteHeader({ isAuthenticated = false }: { isAuthenticated?: bool
             className="bg-ink text-paper hover:bg-ink/85"
             onClick={() => {
               window.location.assign(
-                `${AUTH_URL}/login?next=${encodeURIComponent(WORKSPACE_URL)}`
+                `${AUTH_URL}/login?next=${encodeURIComponent(workspaceUrl())}`
               );
             }}
           >

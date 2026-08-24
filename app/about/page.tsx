@@ -1,7 +1,7 @@
 import { Logo } from "@zmzai/theme";
 
 export const metadata = {
-  title: "为什么 · zmzai cloud",
+  title: "为什么 · zmzai.cloud",
 };
 
 export default function AboutPage() {
@@ -26,7 +26,7 @@ export default function AboutPage() {
           让它一眼就和一万个 AI 站混在一起。
         </p>
         <p>
-          <code className="font-mono">zmzai cloud 牧之</code> 的回答是把
+          <code className="font-mono">zmzai.cloud 牧之</code> 的回答是把
           “牧之”从 logo 里拿出来，放回署名的位置。logo 主体交给{" "}
           <code className="font-mono">zmzai</code> 这个可被占用的罗马化词；
           “牧之”作为署名，放在每个项目角落。像作者在书末签字，而不是像

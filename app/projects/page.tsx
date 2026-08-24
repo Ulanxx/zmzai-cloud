@@ -3,7 +3,7 @@ import Link from "next/link";
 import { allProducts, statusLabel } from "@/lib/projects";
 
 export const metadata = {
-  title: "产品线 · zmzai cloud",
+  title: "产品线 · zmzai.cloud",
 };
 
 export default function ProjectsPage() {

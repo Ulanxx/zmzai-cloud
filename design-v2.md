@@ -1,4 +1,4 @@
-# Design v2 — zmzai cloud
+# Design v2 — zmzai.cloud
 
 新设计语言规范。替代 v1「印章署名 手作纸」。确认后全量替换 7 个站的
 `globals.css` token + `design.md`。
