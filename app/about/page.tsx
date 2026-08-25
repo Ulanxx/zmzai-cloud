@@ -26,11 +26,11 @@ export default function AboutPage() {
           让它一眼就和一万个 AI 站混在一起。
         </p>
         <p>
-          <code className="font-mono">zmzai.cloud 牧之</code> 的回答是把
+          <code className="font-mono">zmzai.cloud 知末智云</code> 的回答是把
           “牧之”从 logo 里拿出来，放回署名的位置。logo 主体交给{" "}
           <code className="font-mono">zmzai</code> 这个可被占用的罗马化词；
-          “牧之”作为署名，放在每个项目角落。像作者在书末签字，而不是像
-          SaaS 在导航栏贴图标。
+          「知末智云」是品牌主体，“牧之”作为作者署名，放在每个项目角落。像作者在
+          书末签字，而不是像 SaaS 在导航栏贴图标。
         </p>
       </div>
 

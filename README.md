@@ -1,4 +1,4 @@
-# zmzai.cloud · 牧之
+# zmzai.cloud · 知末智云
 
 `zmzai.cloud` 是 ZMZ AI 的产品矩阵主站。
 
@@ -13,10 +13,10 @@
 
 ## 不负责
 
-- 不承接模型调用，模型调用在 [`zmzai-relay`](https://github.com/Ulanxx/zmzai-relay)；
-- 不执行代码，受限执行在 [`zmzai-sandbox`](https://github.com/Ulanxx/zmzai-sandbox)；
-- 不做 Agent 编排，任务运行在 [`zmzai-agent`](https://github.com/Ulanxx/zmzai-agent)；
-- 不注册账号，账号入口由牧之和 [`zmzai-auth`](https://github.com/Ulanxx/zmzai-auth) 承接。
+- 不承接模型调用，模型调用在 [`zmzai-relay`](https://github.com/zmzai-cloud/zmzai-relay)；
+- 不执行代码，受限执行在 [`zmzai-sandbox`](https://github.com/zmzai-cloud/zmzai-sandbox)；
+- 不做 Agent 编排，任务运行在 [`zmzai-agent`](https://github.com/zmzai-cloud/zmzai-agent)；
+- 不注册账号，账号入口由知末智云和 [`zmzai-auth`](https://github.com/zmzai-cloud/zmzai-auth) 承接。
 
 ## 目录
 
@@ -27,7 +27,7 @@
 | `app/workspace/` | 登录后的工作区入口 |
 | `lib/projects.ts` | 产品线数据源，新增子项目从这里开始 |
 | `providers/auth/session.ts` | 共享登录态读取 |
-| `components/seal.tsx` | 牧之方印 |
+| `@zmzai/theme` | Logo 云朵标 / Wordmark / favicon 等品牌资产 |
 | `components/wordmark.tsx` | `zmzai.cloud` wordmark |
 | `BRAND.md` | 品牌故事、命名和视觉约束 |
 | `design.md` | 设计系统说明 |
@@ -53,7 +53,7 @@ pnpm lint
 | --- | --- | --- |
 | `APP_URL` | `http://localhost:3013` | 当前主站地址 |
 | `MONGODB_URI` | 无 | 共享账号和 session 数据库 |
-| `AUTH_SECRET` | 无 | 必须与牧之账号体系一致 |
+| `AUTH_SECRET` | 无 | 必须与知末智云账号体系一致 |
 | `SESSION_COOKIE_NAME` | `muzhi_session` | 登录态 cookie 名称 |
 | `SESSION_COOKIE_DOMAIN` | 空 | 多子域共享登录时使用 |
 
@@ -63,4 +63,4 @@ pnpm lint
 2. 子项目沿用 `BRAND.md` 和 `design.md` 的命名、纸面风和方印系统；
 3. 子域使用 `<slug>.zmzai.cloud`，主站只做入口和索引。
 
-Apache-2.0 · 牧之
+Apache-2.0 · 知末智云

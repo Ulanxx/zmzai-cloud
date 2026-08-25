@@ -9,7 +9,7 @@ export function SiteFooter() {
           <p className="font-mono text-xs text-muted">
             zmzai.cloud
             <br />
-            牧之的 AI 产品系统
+            知末智云的 AI 产品系统
           </p>
         </div>
         <p className="max-w-xs font-mono text-xs text-muted sm:text-right">

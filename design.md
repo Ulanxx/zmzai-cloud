@@ -1,10 +1,15 @@
-# Design — zmzai.cloud 牧之
+# Design — zmzai.cloud 知末智云
 
 Locked design system. Future Hallmark runs read this file first; pages defer
 to it. Amend intentionally — the file is the rule.
 
+> **注（2026-08-25）**：本文件为历史印章风设计锁定（暖纸 + 印泥红），已被
+> `@zmzai/theme` 设计系统取代。现行视觉事实来源：`@zmzai/theme` 包 + 各站
+> `app/globals.css` 的 `:root`（纯白 + 荧光绿 + MiSans）。本文件仅作品牌演进
+> 历史存档。
+
 Locked via Hallmark **Study** for the `zmzai.cloud` hub brand, the umbrella
-site hosting 牧之's OPC project collection. Each sub-project shares this
+site hosting 知末智云's OPC project collection. Each sub-project shares this
 chassis and may declare a project-level accent under `## Variants`.
 
 ## System
