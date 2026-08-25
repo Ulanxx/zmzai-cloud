@@ -12,4 +12,5 @@ DEPLOY_TARGETS=(
   "sandbox|zmzai-sandbox|3010|z.zmzai.cloud"
   "agent|zmzai-agent|3011|a.zmzai.cloud"
   "workos|zmzai-workos|3012|i.zmzai.cloud"
+  "arena|zmzai-arena|3000|arena.zmzai.cloud"
 )
