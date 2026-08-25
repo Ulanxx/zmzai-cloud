@@ -119,7 +119,7 @@ const ctaChecks = [
 const faqs = [
   {
     q: "zmzai.cloud 是什么？",
-    a: "zmzai.cloud 是牧之的 AI 产品系统枢纽。它整合了模型接口（Relay）、沙箱执行（Sandbox）、Agent 工作台、知识博客（Muzhi）等产品，提供统一的账号和入口。",
+    a: "zmzai.cloud 是知末智云的 AI 产品系统枢纽。它整合了模型接口（Relay）、沙箱执行（Sandbox）、Agent 工作台、知识博客（Muzhi）等产品，提供统一的账号和入口。",
   },
   {
     q: "Relay 和直接调用 OpenAI API 有什么区别？",

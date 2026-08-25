@@ -1,7 +1,7 @@
 /**
  * zmzai.cloud 产品矩阵 — z·m·z·a·i 逐字母体系。
- * 五个字母是「牧之 muzhi」拼音的拆解：每个字母挂一条 AI 产品线，
- * 既是产品索引，又是署名。命名体系见 BRAND.md §产品矩阵。
+ * 五个字母是「知末智云」拼音首字母与 AI 的合成：每个字母挂一条 AI 产品线，
+ * 既是产品索引，又是品牌拆解。命名体系见 BRAND.md §产品矩阵。
  */
 
 export type ProductStatus = "live" | "building" | "planned";
@@ -32,7 +32,7 @@ export const rootProduct: ProductLine = {
   letter: "M",
   hanzi: "牧之",
   name: "Muzhi",
-  tagline: "牧之的知识产品",
+  tagline: "牧之署名站的知识产品",
   description:
     "博客 + 付费知识体系。发布内容、注册、免费信任、支付或邀请码获得权益、安全观看与下载、保存进度、反馈改进——一条经过真实业务验证的闭环。",
   status: "live",
