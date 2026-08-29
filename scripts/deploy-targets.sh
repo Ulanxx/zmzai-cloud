@@ -13,4 +13,8 @@ DEPLOY_TARGETS=(
   "agent|zmzai-agent|3011|a.zmzai.cloud"
   "workos|zmzai-workos|3012|i.zmzai.cloud"
   "arena|zmzai-arena|3000|arena.zmzai.cloud"
+  "data|zmzai-data|3004|d.zmzai.cloud"
+  "memory|zmzai-memory|3015|k.zmzai.cloud"
+  "billing|zmzai-billing|3005|b.zmzai.cloud"
+  "status|zmzai-status|3006|status.zmzai.cloud"
 )
