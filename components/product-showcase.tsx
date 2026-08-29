@@ -105,7 +105,7 @@ function SandboxTerminal() {
         </div>
         <div className="mt-2 text-dark-ink/40">
           <span className="text-success">$</span>{" "}
-          <span className="showcase-cursor" />
+          <span className="inline-block h-[15px] w-[7px] bg-dark-ink/25 align-text-bottom" />
         </div>
       </div>
     </div>
@@ -119,7 +119,7 @@ function AgentFlow() {
       <div className="showcase-titlebar">
         <span className="showcase-dot" />
         <span>Task Pipeline</span>
-        <span className="ml-auto font-mono text-[10px] text-accent">● executing</span>
+        <span className="ml-auto font-mono text-[10px] text-live">● executing</span>
       </div>
       <div className="p-5 flex flex-col gap-3">
         {[
@@ -134,7 +134,7 @@ function AgentFlow() {
                 step.status === "done"
                   ? "border-success text-success bg-success/5"
                   : step.status === "active"
-                    ? "border-accent text-accent bg-accent/10"
+                    ? "border-live text-live bg-live/10"
                     : "border-line text-muted"
               }`}
             >
@@ -143,7 +143,7 @@ function AgentFlow() {
             <div className="flex-1 min-w-0">
               <div className={`font-mono text-xs ${
                 step.status === "done" ? "text-success" :
-                step.status === "active" ? "text-accent" : "text-muted"
+                step.status === "active" ? "text-live" : "text-muted"
               }`}>
                 {step.label}
               </div>
@@ -153,9 +153,9 @@ function AgentFlow() {
             </div>
             {step.status === "active" && (
               <span className="flex gap-1 shrink-0">
-                <span className="w-1 h-1 rounded-full bg-accent animate-pulse" />
-                <span className="w-1 h-1 rounded-full bg-accent animate-pulse" style={{ animationDelay: "200ms" }} />
-                <span className="w-1 h-1 rounded-full bg-accent animate-pulse" style={{ animationDelay: "400ms" }} />
+                <span className="w-1 h-1 rounded-full bg-live animate-pulse" />
+                <span className="w-1 h-1 rounded-full bg-live animate-pulse" style={{ animationDelay: "200ms" }} />
+                <span className="w-1 h-1 rounded-full bg-live animate-pulse" style={{ animationDelay: "400ms" }} />
               </span>
             )}
           </div>
@@ -267,7 +267,7 @@ function HubMap() {
   return (
     <div className="relative w-full h-[260px]">
       {/* 中心 Hub */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-full border-2 border-accent flex items-center justify-center bg-paper z-10">
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-full border-2 border-accent flex items-center justify-center bg-bg z-10">
         <span className="font-mono text-[11px] text-accent font-bold">Hub</span>
       </div>
       {/* 连接线 */}
