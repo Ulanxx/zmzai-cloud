@@ -150,23 +150,31 @@ zmzai.cloud                ← 主站：品牌首页 + 产品索引
   明显是一家人。
 - 域名用子域：`[x].zmzai.cloud`。子域对应独立部署。
 
-## 6.5 产品命名（过渡态 · 待商榷）
+## 6.5 产品命名（书写系列 · 2026-08-30 定案）
 
-**现行过渡方案 = 功能全词**（弃用单字母代号 a/m/z/i/k；汉字印章方向已否）。最终命名待商榷，新页面/新文档先按下表用全词，改起来只是一个查表替换：
+一页纸从写到印到装订到落款的完整过程，对应产品从执行到记录到归档的全链路。
+全部为真实英文出版术语——开发者零学习成本（log / index / plate 在代码语境里本就有意义），
+无中式印章元素。
 
-| 对外名 | 域名 | 旧代号 |
-|---|---|---|
-| zmzai Cloud | zmzai.cloud | hub |
-| zmzai Agent | agent.zmzai.cloud | a |
-| zmzai Relay | relay.zmzai.cloud | m |
-| zmzai Sandbox | sandbox.zmzai.cloud | z |
-| zmzai WorkOS | work.zmzai.cloud | i |
-| zmzai Memory | memory.zmzai.cloud | k |
-| zmzai Arena | arena.zmzai.cloud | — |
-| muzhi | muzhi.zmzai.cloud | —（保留现名） |
+| 对外名 | 产品 | 域名（第二阶段） | 隐喻 |
+|---|---|---|---|
+| **Folio** | 门户 · Cloud | zmzai.cloud | 对开本首页——账户、工作区、入口 |
+| **Quill** | Agent 工作台 | quill.zmzai.cloud | 执笔者 |
+| **Margin** | 模型中继 | margin.zmzai.cloud | 页边通道——批注与传递 |
+| **Plate** | 代码沙箱 | plate.zmzai.cloud | 印版——隔离试跑，跑完即焚 |
+| **Index** | 收件箱 · WorkOS | index.zmzai.cloud | 目录——今日视图 |
+| **Codex** | 记忆中心 | codex.zmzai.cloud | 古卷——装订成册的记忆 |
+| **Colophon** | 投研竞技场 | colophon.zmzai.cloud | 版本记——排行与落款 |
+| muzhi | 内容站 | muzhi.zmzai.cloud | 保留现名 |
 
-规则：技术标识（仓库名 / 包名 @zmzai/* / pm2 进程名 / deploy-targets）与品牌名是两套系统，
-品牌名只出现在用户看得见的地方；新产品的对外名 = `zmzai + 功能全词`，不造字母、不用汉字印。
+**命名与视觉同源**：暖纸底 = Folio 的纸，墨骨 = Quill 的墨，Serif 标题 = Codex 的字。
+名字解释视觉、视觉解释名字——这是品牌最难得的自洽，改动任一侧都要回看另一侧。
+
+**规则**
+- 技术标识（仓库名 / 包名 @zmzai/* / pm2 进程名 / deploy-targets）与品牌名是两套系统；
+  品牌名只出现在用户看得见的地方（页面标题、导航子标、文档、对外沟通）。
+- 新产品命名：从出版/书写词表里取，且必须能回答"它在这页纸的哪个位置"。
+- 第一阶段只改呈现层（已完成）；第二阶段配 DNS 子域并 301 旧域（待排期）。
 
 ## 7. 品牌戒律（写代码时遵守）
 
