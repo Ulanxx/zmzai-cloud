@@ -24,10 +24,10 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "zmzai.cloud · 知末智云的 AI 产品系统",
+  title: "zmzai Folio · 知末智云的 AI 产品系统",
   description: "Relay、Sandbox、Agent、Muzhi——各自独立运行，从同一个入口出发。一个账号，打通 AI 开发全链路。",
   openGraph: {
-    title: "zmzai.cloud · 知末智云的 AI 产品系统",
+    title: "zmzai Folio · 知末智云的 AI 产品系统",
     description: "Relay、Sandbox、Agent、Muzhi——各自独立运行，从同一个入口出发。一个账号，打通 AI 开发全链路。",
     type: "website",
   },
