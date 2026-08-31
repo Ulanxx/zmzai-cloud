@@ -217,7 +217,8 @@ zmzai.cloud                ← 主站：品牌首页 + 产品索引
 4. **一个颜色只干一件事。** 同一个绿不能既在按钮上、又在状态点上。
 5. **不做居中对齐的通用落地页。** 用左对齐的 Editorial Index 结构。
 6. **不做四张图标方块功能卡。** 要列能力就写成段落或编号清单。
-7. **不在导航栏贴图形 logo 当装饰。** wordmark 在左，云朵 Logo 进品牌区，
+7. **不在导航栏贴图形 logo 当装饰。** 云朵 Logo 只出现在品牌锁标
+   （`BrandLockup`：Logo + ZMZAI + 子站标）里，全站一处定义、各壳共用；
    署名 motif 已随印章视觉下线（2026-08-30 定案）。
 8. **层次用灰阶和阴影，不用彩色描边。** 卡片靠 `--color-surface` 与
    `--shadow-*` 分层，不靠 accent 描边去"点亮"。
@@ -238,12 +239,16 @@ zmzai.cloud                ← 主站：品牌首页 + 产品索引
 14. **页面标题一律走 `PageHeader`，不许各页面手写 h1。** theme v0.9.4
     引入，2026-08-31 全面替换（此前 agent/relay 共 38 个页面各自手写，
     标题旁 0 图标、字号分 5 档、token 各有偏差）。两种 variant，没有第三种：
-    - `page`——其余全部：内联图标（20px）+ text-2xl 衬线标题，眉标用
-      分区名（「控制台」「长期上下文」），描述 text-sm `text-ink-2`。
+    - `page`——其余全部：mono 眉标 + 内联图标（20px）+ text-3xl 衬线
+      大标题（v0.9.7 改版定案：衬线视觉体量比无衬线小，必须放大一档才压得住
+      图标与正文；图标降为 text-ink-2，是辅助信息不与标题同权重），
+      描述 text-sm leading-7 `text-ink-2`、限宽 max-w-2xl。
     - `hero`——仅落地页：44px 墨底徽章 + text-4xl，居中构图加 `centered`。
     标题旁**必须有图标**，图标取 theme 语义图标集（16px 网格、currentColor），
     禁止 Emoji / Unicode 字符当图标。描述不用 `text-ink-3`（3.69:1 太低），
     也不用 `text-muted-foreground` 这类 shadcn 遗留变量。
+    眉标用等宽小写间距体（font-mono uppercase tracking-[0.16em]）——
+    等宽小标是全站通用的小节语言，各页面不许自造第二套。
 
 ## 8. 口吻
 
