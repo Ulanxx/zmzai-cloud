@@ -235,6 +235,15 @@ zmzai.cloud                ← 主站：品牌首页 + 产品索引
 13. **品红只活在墨底上，且每屏一次。** `--color-spot*` 色阶只能出现在
     深色载体，实底配墨黑字，与 danger 不同框（守卫 G2 强制）。
     白底界面永远保持墨骨单色——彩色的出口是深色叙事区，不是按钮。
+14. **页面标题一律走 `PageHeader`，不许各页面手写 h1。** theme v0.9.4
+    引入，2026-08-31 全面替换（此前 agent/relay 共 38 个页面各自手写，
+    标题旁 0 图标、字号分 5 档、token 各有偏差）。两种 variant，没有第三种：
+    - `page`——其余全部：内联图标（20px）+ text-2xl 衬线标题，眉标用
+      分区名（「控制台」「长期上下文」），描述 text-sm `text-ink-2`。
+    - `hero`——仅落地页：44px 墨底徽章 + text-4xl，居中构图加 `centered`。
+    标题旁**必须有图标**，图标取 theme 语义图标集（16px 网格、currentColor），
+    禁止 Emoji / Unicode 字符当图标。描述不用 `text-ink-3`（3.69:1 太低），
+    也不用 `text-muted-foreground` 这类 shadcn 遗留变量。
 
 ## 8. 口吻
 
