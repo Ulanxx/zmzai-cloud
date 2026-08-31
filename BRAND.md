@@ -190,11 +190,11 @@ zmzai.cloud                ← 主站：品牌首页 + 产品索引
 | **Margin** | 模型中继 | margin.zmzai.cloud | 页边通道——批注与传递 |
 | **Plate** | 代码沙箱 | plate.zmzai.cloud | 印版——隔离试跑，跑完即焚 |
 | **Index** | 收件箱 · WorkOS | index.zmzai.cloud | 目录——今日视图 |
-| **Codex** | 记忆中心 | codex.zmzai.cloud | 古卷——装订成册的记忆 |
+| **Tome** | 记忆中心 | tome.zmzai.cloud | 卷帙——装订成册的长期记忆 |
 | **Colophon** | 投研竞技场 | colophon.zmzai.cloud | 版本记——排行与落款 |
 | muzhi | 内容站 | muzhi.zmzai.cloud | 保留现名 |
 
-**命名与视觉同源**：纯白底 = Folio 的纸，墨骨 = Quill 的墨，Serif 标题 = Codex 的字。
+**命名与视觉同源**：纯白底 = Folio 的纸，墨骨 = Quill 的墨，Serif 标题 = Tome 的字。
 名字解释视觉、视觉解释名字——这是品牌最难得的自洽，改动任一侧都要回看另一侧。
 
 **规则**
