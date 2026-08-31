@@ -11,5 +11,5 @@ set +a
 
 test -n "${RELAY_INTERNAL_CRON_SECRET:-}"
 curl --fail --silent --show-error --max-time 30 \
-  -X POST "https://m.zmzai.cloud/api/internal/reconcile-reservations" \
+  -X POST "https://relay.zmzai.cloud/api/internal/reconcile-reservations" \
   -H "Authorization: Bearer $RELAY_INTERNAL_CRON_SECRET" >/dev/null

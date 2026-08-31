@@ -83,12 +83,12 @@ bash scripts/mongo-migrate.sh dump
 | 进程 | 端口 | 域名 | 仓 |
 |---|---|---|---|
 | auth | 3001 | auth.zmzai.cloud | zmzai-auth |
-| relay | 3002 | m.zmzai.cloud | zmzai-relay |
+| relay | 3002 | relay.zmzai.cloud | zmzai-relay |
 | hub | 3013 | zmzai.cloud | zmzai-cloud |
 | muzhi | 3014 | muzhi.zmzai.cloud | muzhi |
-| sandbox | 3010 | z.zmzai.cloud | zmzai-sandbox |
-| agent | 3011 | a.zmzai.cloud | zmzai-agent |
-| workos | 3012 | i.zmzai.cloud | zmzai-workos |
+| sandbox | 3010 | sandbox.zmzai.cloud | zmzai-sandbox |
+| agent | 3011 | agent.zmzai.cloud | zmzai-agent |
+| workos | 3012 | workos.zmzai.cloud | zmzai-workos |
 
 Caddy 反代 `:443` → 各端口，自动签 TLS。PM2 管进程（runner 用户），
 开机自启（`pm2-runner` systemd 服务）。MongoDB 只监听 127.0.0.1。
